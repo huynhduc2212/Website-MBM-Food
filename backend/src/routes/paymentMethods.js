@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const paymentMethodController = require('../controllers/paymentController');
+router.get('/', paymentMethodController.getAll);
+router.post('/',paymentMethodController.createPaymentMethod);
+router.put("/:id", paymentMethodController.updatePaymentMethod);
+router.delete("/:id", paymentMethodController.deletePaymentMethod);
+router.post("/momo/", paymentMethodController.createMomoPayment);
+router.post("/momo/callback", paymentMethodController.momoCallback);
+module.exports = router;

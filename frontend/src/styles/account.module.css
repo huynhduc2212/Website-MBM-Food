@@ -1,0 +1,81 @@
+/* Account.module.css */
+.accountContainer {
+    font-size: 14px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: #f8f9fa;
+    max-width: 1300px;
+    margin:0px auto;
+}
+
+.breadcrumbContainer {
+    background: #e5e5e5;
+    padding: 10px;
+}
+
+.sidebar {
+    border-right: 1px solid #ddd;
+    padding-right: 15px;
+}
+
+.sidebar h5 {
+    font-weight: 400;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Điều chỉnh khoảng cách giữa các dòng */
+  }
+  
+
+.sidebar ul li {
+    list-style: none;
+    margin-bottom: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Điều chỉnh khoảng cách giữa các dòng */
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    color: red;
+}
+
+.table thead {
+    background-color: red;
+    color: white;
+}
+
+.btnRed {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btnRed:hover {
+    background-color: darkred;
+}
+.row {
+    gap: 30px; 
+  }
+  
+  .content {
+    padding-left: 20px; 
+    flex-grow: 1;
+    max-width: 900px;
+  }
+

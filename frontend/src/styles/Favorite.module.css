@@ -1,0 +1,97 @@
+/* Card sản phẩm */
+.productCard {
+    border-radius: 12px;
+    border: 1px solid #080101; /* Viền card */
+    box-shadow: 0px 14px 20px rgba(0, 0, 0, 0.1); /* Box shadow */
+    transition: transform 0.2s ease-in-out;
+    height: 450px; /* Giữ chiều cao cố định */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0px;
+    background: #fff;
+  }
+ 
+  /* Hiệu ứng hover */
+  .productCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Vùng chứa hình ảnh */
+  .productImageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 200px;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  
+  /* Hình ảnh sản phẩm */
+  .productImage {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+  }
+  
+  .productTitle {
+    font-size: 14px;
+    font-family: "Quicksand", sans-serif;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; /* Cắt ngắn nếu quá dài */
+  }
+  
+  /* Mô tả sản phẩm */
+  .productDescription {
+    font-size: 14px;
+    color: #666;
+    padding:10px;
+    padding-top:0px;
+    text-align: left;
+    height: 40px; /* Giới hạn mô tả */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
+  /* Phần footer chứa giá và nút thêm */
+  .productFooter {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  
+  /* Giá sản phẩm */
+  .productPrice {
+    font-size: 14px;
+    font-weight: bold;
+    color: #e74c3c;
+    text-align: left;
+  }
+  
+  /* Nút thêm */
+  .btnAdd {
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btnAdd:hover {
+    background-color: #e64a19;
+  }
+  

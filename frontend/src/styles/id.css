@@ -1,0 +1,373 @@
+.article-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 1260px;
+    padding: 20px;
+}
+
+.article-main {
+    flex: 1;
+    min-width: 55%;
+    /* max-width: 60%; */
+    margin: 0 auto;
+    /* padding: 25px; */
+    background: #fff;
+    border-radius: 8px;
+    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+}
+
+.right-content {
+    flex: 1;
+    /* min-width: 40%;
+    max-width: 40%; */
+    padding: 15px;
+}
+
+.col-xl-4 {
+    flex: 0 0 30%;
+    max-width: 30%;
+}
+
+.aside-section {
+    flex: 1;
+    /* background: #f9f9f9; */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.aside-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.aside-list {
+    list-style: none;
+    padding: 0;
+}
+
+.aside-list li {
+    margin: 5px 0;
+}
+
+.aside-list a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.aside-list a:hover {
+    color: #007bff;
+}
+
+.aside-news-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* .aside-news-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 8px;
+  } */
+
+.article-detail {
+    background: #fff;
+    /* padding: 20px; */
+    border-radius: 8px;
+    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+}
+
+.article-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.posts {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.time-post {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #555;
+}
+
+.time-post svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    color: #888;
+}
+
+.ftoc-head {
+    background: #ebf9ff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.goto-wrapper, .ftoc-head {
+    width: 100%;
+    /* min-height: 150px; */
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+ .ftoc-head, .title-goto-wrapper{
+    font-size: 20px;
+    margin-bottom: 17px;
+    position: relative;
+    font-size: 24px;
+    /* font-weight: bold; */
+    color: #006a31;
+    display: inline-block;
+}
+
+.dola-toc .toc-list {
+    color: black;
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+
+ftoc-head .title-goto-wrapper {
+    font-size: 26px;
+    font-weight: 700;
+    color: #006a31;
+    display: block;
+}
+
+.toc-list-item {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.toc-list-item a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.toc-list-item a:hover {
+    color: #0056b3;
+}
+
+.toc-list p{
+    margin-bottom: 10px;
+}
+
+.content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+}
+.content p{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.content p img {
+  width: 100%; /* Hoặc một kích thước cụ thể như 300px */
+  height: auto; /* Để giữ tỷ lệ */
+  max-height: 500px; /* Giới hạn chiều cao để tránh hình quá lớn */
+  object-fit: cover; /* Cắt ảnh để giữ kích thước đều nhau */
+  border-radius: 8px; /* Tùy chỉnh bo góc nếu cần */
+}
+
+
+.content h2{
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+.content h3{
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Comment */
+.thump-comment {
+    /* background: #f8f9fa; */
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .title-page {
+    margin-bottom: 20px;
+    text-align: center;
+}
+  
+  .title-page span, .title-page a {
+    position: relative;
+    padding-bottom: 10px;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #006a31;
+}
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .form-control:focus {
+    border-color: #006a31; /* Màu viền xanh đậm */
+    box-shadow: 0 0 5px rgba(0, 106, 50, 0.178); /* Hiệu ứng phát sáng nhẹ */
+    outline: none; /* Loại bỏ viền mặc định */
+    transition: 0.3s ease-in-out; /* Hiệu ứng mượt */
+  }
+
+  #article-comments .title-form-coment{
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding-bottom: 15px;
+    color: #000;
+    font-weight: 400;
+  }
+
+  textarea.form-control {
+    resize: none;
+  }
+  
+  .btn-primary {
+    background: #006a31;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background: #004f25;
+  }
+  
+  .article-comment {
+    display: flex;
+    align-items: center; 
+    gap: 15px;
+    padding-top: 5px;
+  }
+  
+  .article-comment-user-image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+  }
+
+  .article-comment-user-image {
+    flex-shrink: 0; /* Giữ nguyên kích thước ảnh, không bị co lại */
+  }
+  
+  .article-comment-user-comment {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    
+  }
+  .article-comment:not(:last-child) {
+    border-bottom: 1px solid #ddd; 
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+  
+  .user-name-comment strong {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .article-comment-date-bull {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .cm {
+    font-size: 15px;
+    color: #444;
+  }
+
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .article-comment {
+      flex-direction: column;
+    }
+  
+    .article-comment-user-image img {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .form-control {
+      font-size: 14px;
+    }
+  
+    .btn-primary {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+  
+
+
+
+@media (max-width: 992px) {
+    .article-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .article-main {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .right-content {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .col-xl-4 {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .article-main {
+        padding: 15px;
+    }
+    
+    .aside-section {
+        padding: 10px;
+    }
+}

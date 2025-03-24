@@ -1,0 +1,70 @@
+.sidebar {
+    width: 210px;
+    height: 100vh;
+    background-color: #006A31;
+    
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.24);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    font-size: 13px;
+    overflow-y: auto; 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+.link {
+    text-decoration: none; 
+    color: inherit; 
+    display: flex; 
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    /* display: flex; */
+    display: inline-block;
+    width: 100%;
+    align-items: center;
+    gap: 10px; 
+    padding: 1px 5px;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    color:rgba(255, 255, 255, 0.877);
+    font-size: 14px; 
+    transition: background-color 0.3s, color 0.3s, border-left 0.3s; 
+}
+
+.sidebar ul li a {
+    padding: 15px 20px;
+}
+
+.sidebar ul li .icon {
+    font-size: 18px; 
+    width: 24px; 
+    text-align: center;
+}
+
+/* Hover và trạng thái active */
+.sidebar ul li.active,
+.sidebar ul li:hover {
+    background-color: #d1fadf; /* Màu xanh lá cây nhạt */
+    border-left: 4px solid #1816a3; /* Xanh lá cây đậm */
+    color: #1b1665; /* Xanh lá cây tối hơn */
+}
+
+
+/* Khi trang đang active */
+.sidebar ul li.sidebarItemActive {
+    background-color: #d1fadf; /* Xanh lá cây nhạt */
+    border-left: 4px solid #161fa3;
+    color: #162f65;
+}

@@ -1,0 +1,234 @@
+.page-he-thong {
+    margin-bottom: 30px;
+    color: #000;
+}
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1300px;
+    }
+}
+.hethong-info {
+    margin-bottom: 20px;
+}
+.hethong-info .row-fix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center; 
+}
+
+.hethong-info .row-fix .col-fix {
+    flex: 1 1 310px;
+    max-width: 310px;
+    display: flex;
+    justify-content: center;
+}
+
+.hethong-info .item {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    background: #006a31;
+    padding: 10px;
+    border-radius: 5px;
+}
+.hethong-info .item .thump img {
+    max-height: 80px;
+}
+.hethong-info .item span {
+    font-size: 16px;
+    color: #fff;
+    display: block;
+    text-align: right;
+}
+.hethong-info .item span b {
+    display: block;
+    font-size: 50px;
+}
+.option-chos.option-chos1 {
+    width: 100%;
+    max-width: 1200px; /* Cùng max-width với .hethong-info */
+    margin: 0 auto; /* Căn giữa */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.option-chos.option-chos1 .group-option {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+.option-chos.option-chos1 .group-city {
+    flex: 1 1 300px;
+    max-width: 400px;
+}
+
+.option-chos.option-chos1 .group-city .title {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.option-chos.option-chos1 .group-city .select,
+.option-chos.option-chos1 .group-city .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.page-he-thong .option-chos .group-option .group-city .title{
+    margin-bottom: 10px;
+    display: block;
+    color: #8D8D9F;
+}
+.page-he-thong .option-chos .group-option .group-city select#city{
+    background-color: #006a31;
+    color: #fff;
+}
+.page-he-thong .option-chos .group-option .group-city select option{
+    background-color: #fff;
+    color: #000;
+}
+.page-he-thong .option-chos .info-store {
+    overflow: hidden;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+.page-he-thong .option-chos .info-store .store-list {
+    padding: 5px 10px;
+    line-height: 24px;
+    border: 1px solid #e1e1e1;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+.page-he-thong .option-chos .info-store .store-list .name-cuahang {
+    color: #006a31;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: block;
+}
+.page-he-thong .option-chos .info-store .store-list .store-name {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 10px;
+    align-items: center;
+}
+.page-he-thong .option-chos .info-store .store-list .store-name b {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #949494;
+    border-radius: 50%;
+    margin-right: 10px;
+    padding: 5px;
+    margin-right: 10px;
+}
+.page-he-thong .option-chos .info-store .store-list .store-phone {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 10px;
+    align-items: center;
+}
+.page-he-thong .option-chos .info-store .store-list .store-phone .phone-url {
+    margin-left: 10px;
+    color: #006a31;
+}
+/* .page-he-thong .option-chos .info-store .store-list .store-url {
+    background: #E4ECFF;
+    padding: 5px 20px;
+    border-radius: 30px;
+    display: inline-block;
+    margin-bottom: 5px;
+} */
+.page-he-thong .option-chos .info-store .store-list .store-url b {
+    margin-right: 10px;
+}
+.page-he-thong .option-chos .info-store .store-list .store-name,
+.page-he-thong .option-chos .info-store .store-list .store-phone,
+.page-he-thong .option-chos .info-store .store-list .store-url {
+    display: flex;
+    align-items: center;
+}
+
+.page-he-thong .option-chos .info-store .store-list .store-name b,
+.page-he-thong .option-chos .info-store .store-list .store-phone b {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #949494;
+    border-radius: 50%;
+    padding: 5px;
+    /* background: #fff; */
+}
+
+.page-he-thong .option-chos .info-store .store-list .store-url {
+    display: flex;
+    align-items: center;
+    background: #E4ECFF;
+    padding: 5px 15px;
+    border-radius: 30px;
+    margin-bottom: 5px;
+    max-width: 150px;
+}
+
+
+/* Bên phải */
+.page-he-thong .wrapcontact {
+    height: calc(100vh - 15px);
+    overflow: hidden;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 10px;
+    border-radius: 5px;
+    width: 106%;
+}
+.page-he-thong .wrapcontact iframe {
+    width: 100% !important;
+    height: 100vh !important;
+    border: none !important;
+}
+.page-he-thong .pagebody {
+    height: calc(100vh - 15px);
+    overflow: hidden;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 10px;
+    border-radius: 5px;
+}
+.d-none {
+    display: none !important;
+}
+@media (min-width: 992px) {
+    .col-lg-4 {
+        margin-left: 16px;
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+
+    .col-lg-10 {
+        flex: 0 0 60.666%;
+        max-width: 60.666%;
+    }
+}
+
+
+

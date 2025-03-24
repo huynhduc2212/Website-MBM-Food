@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1300px;
+  margin: auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+.checkoutForm, .orderSummary {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkoutForm {
+  flex: 1;
+}
+
+.orderSummary {
+  width: 400px;
+}
+
+.formLabel {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.formInput, .formSelect {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.itemImage {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+
+.price {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.applyBtn, .orderBtn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.applyBtn {
+  background: #3498db;
+  color: white;
+}
+
+.orderBtn {
+  background: #27ae60;
+  color: white;
+}
+.paymentOptions {
+  margin-top: 20px;
+}
+
+.paymentTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}

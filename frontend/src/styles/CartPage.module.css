@@ -1,0 +1,246 @@
+.container{
+    max-width: 1300px;
+    
+    margin: 0 auto;
+}
+.mainCartPage{
+    display: block;
+    padding-bottom: 10px;
+}
+.mainContainer{
+    min-height: 300px;
+}
+.wrapBackGround{
+
+}
+.headerCart{
+    
+}
+.titleBlockPage{
+    display: block;
+    unicode-bidi: isolate;
+}
+.titleCart{
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.cartLeft{
+    flex: 0 0 75%;
+        max-width: 75%;
+}
+.cartPage{
+    background: #fff;
+    border-radius: 5px;
+}
+.drawer{
+    display: block;
+    unicode-bidi: isolate;
+}
+.cartPageContainer{
+    
+}
+.formCart{
+    display: block;
+    margin-top: 0em;
+    unicode-bidi: isolate;
+}
+.cartHeaderInfo{
+    display: flex;
+    padding: 7px 0;
+    border: solid 1px #ebebeb;
+    border-bottom: none;
+    font-weight: bold;
+}
+.cartHeaderInfo div:nth-child(1){
+    width: 51%;
+    text-align: left;
+    padding-left: 10px;
+}
+.cartHeaderInfo div:nth-child(2){
+    width: 16%;
+    text-align: center;
+}
+.cartHeaderInfo div:nth-child(3){
+    width: 16%;
+    text-align: center;
+}
+.cartHeaderInfo div:nth-child(4){
+    width: 16%;
+    text-align: center;
+}
+.cartBody{
+    border: solid 1px #ebebeb;
+}
+.ajaxCartRow:first-child{
+ border-top: none;
+}
+.ajaxCartRow{
+    padding: 10px 0;
+}
+.ajaxCartProduct{
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+}
+.ajaxImage{
+    vertical-align: middle;
+    border-style: none;
+    max-width: 100%;
+    height: auto;
+}
+.gridItemInfo{
+    padding-left: 15px;
+    vertical-align: top;
+    padding-right: 10px;
+    display: flex;
+    width: calc(100% - 110px);
+}
+.cartName{
+    width: 50%;
+    margin-bottom: 5px;
+}
+.ProductName{
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    line-height: 18px;
+    display: block;
+}
+.VariantTitle{
+    display: block;
+    font-size: 12px;
+}
+.removebtn{
+    display: block;
+    color: #006a31;
+}
+.grid{
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cartPrice{
+    display: block;
+    unicode-bidi: isolate;
+}
+.price{
+    font-weight: bold;
+    display: block;
+    font-size: 14px;
+    color: #e31837;
+}
+.cartSelect{
+    display: block;
+    min-height: 30px;
+    font-size: 1em;
+    line-height: 1.5;
+    color: #55595c;
+    background-image: none;
+    margin: 0;
+    width: auto;
+    float: left;
+    position: relative;
+    box-shadow: none;
+    background-color: transparent;
+    border: 1px solid #006a31;
+    border-radius: 5px;
+    padding: 2px;
+}
+.qtyBtnCart{
+    
+}
+.qtybtn{
+    font-size: 20px;
+    line-height: 0px;
+    border: 0;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: #006a31;
+    float: left;
+    color: #fff;
+    text-align: center;
+    padding: 0px;
+    border-radius: 5px;
+}
+.textQty{
+    padding: 0 2px;
+    margin: 0px;
+    display: block;
+    float: left;
+    height: 25px;
+    border: 0;
+    width: 30px;
+    text-align: center;
+    box-shadow: none;
+    border-radius: 8px;
+    font-size: 15px;
+    background: transparent;
+}
+.cartFooter{
+    display: block;
+    unicode-bidi: isolate;
+    margin-top: 20px;
+}
+.offSet{
+    margin-left: 66.666667%;
+    position: relative;
+    width: 34%;
+    padding-right: 15px;
+    padding-left: 15px;
+    
+}
+.subTotal{
+    display: block;
+    unicode-bidi: isolate;
+}
+.cartSubTotal{
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+}
+.cartCol{
+    width: 50%;
+    float: left;
+}
+.textRight{
+    width: 50%;
+    float: left;
+    text-align: right;
+}
+.totalPrice{
+    color: #e31837;
+    font-weight: bold;
+}
+.checkOut{
+    display: block;
+    position: relative;
+}
+.cartBtnCheckOut{
+    width: 100%;
+    background-color: #006a31;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+    border: 1px solid #006a31;
+    border-radius: 5px;
+}
+.Empty{
+    margin-top: 150px;
+    text-align: center;
+}
+.EmptyIcon{
+    overflow: hidden;
+    vertical-align: middle;
+    margin: 0 auto; 
+}
