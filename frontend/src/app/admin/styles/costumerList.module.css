@@ -1,6 +1,7 @@
 .content {
+    padding-left: 16px;
     margin-left: 220px;  /* Để lại khoảng trống đúng bằng Sidebar */
     width: calc(100% - 250px); /* Tính toán chiều rộng còn lại */
-    padding: 0px;
+    /* padding: 0px; */
    
 }

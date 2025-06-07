@@ -11,9 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconDelete, IconEdit } from "../icons";
 import { Input } from "@/components/ui/input";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import useSearch from "../../hooks/useSearch";
 import usePagination from "../../hooks/usePagination";
@@ -26,13 +24,23 @@ interface RegisterData {
   id_user: {
     _id: string;
     username: string;
+    address?: [
+      {
+        _id: string;
+        name: string;
+        phone:string;
+      }
+    ];
   };
   id_table: {
     _id: string;
     name: string;
   };
   start_time: string;
-  create_at: string;
+  end_time: string;
+  booking_date: string;
+  updatedAt: string;
+  cancel_reason: string;
   status: "Confirmed" | "Completed" | "Cancelled";
 }
 
@@ -53,6 +61,17 @@ const RegisterManage = () => {
   const [registers, setRegisters] = useState<RegisterData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const [selectedRegister, setSelectedRegister] = useState<RegisterData | null>(
+    null
+  );
+  const [cancelReason, setCancelReason] = useState<string>("");
+
+  const cancelReasons = [
+    "Thay đổi kế hoạch đột xuất",
+    "Thời tiết xấu hoặc giao thông bất lợi",
+    "Tìm được nhà hàng khác phù hợp hơn",
+  ];
 
   const ITEMS_PER_PAGE = 12;
 
@@ -78,8 +97,9 @@ const RegisterManage = () => {
 
   // Lọc danh sách đăng ký theo tên người dùng
   const filteredRegisters = registers.filter((register) =>
-    register.id_user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    register.id_user?.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
 
   const {
     currentPage,
@@ -92,81 +112,78 @@ const RegisterManage = () => {
     itemsPerPage: ITEMS_PER_PAGE,
   });
 
-  const handleToggleStatus = async (register: RegisterData) => {
-    if (register.status === "Completed" || register.status === "Cancelled") {
+  const openCancelModal = (register: RegisterData) => {
+    if (register.status !== "Confirmed") {
       toast.info("Không thể thay đổi trạng thái của đơn đăng ký này!");
       return;
     }
 
-    if (register.status === "Confirmed") {
-      // Hiển thị xác nhận
-      const confirmResult = await Swal.fire({
-        title: "Bạn có chắc muốn hủy đơn đăng ký này?",
-        text: "Hành động này không thể hoàn tác!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Hủy đơn",
-        cancelButtonText: "Giữ nguyên",
-      });
+    setSelectedRegister(register);
+    setCancelReason(cancelReasons[0]);
+    setShowCancelModal(true);
+  };
 
-      if (confirmResult.isConfirmed) {
-        try {
-          await RegisterServices.updateRegisterStatus(
-            register._id,
-            "Cancelled"
-          );
+  const handleCancelBooking = async () => {
+    if (!selectedRegister || !cancelReason) {
+      toast.error("Vui lòng chọn lý do hủy đơn!");
+      return;
+    }
 
-          setRegisters((prev) =>
-            prev.map((item) =>
-              item._id === register._id
-                ? { ...item, status: "Cancelled" }
-                : item
-            )
-          );
+    try {
+      await RegisterServices.updateRegisterStatus(
+        selectedRegister._id,
+        "Cancelled",
+        cancelReason
+      );
 
-          toast.success("Đã hủy đơn đăng ký!");
-        } catch (error) {
-          toast.error("Có lỗi xảy ra khi hủy đơn đăng ký!");
-        }
-      }
+      setRegisters((prev) =>
+        prev.map((item) =>
+          item._id === selectedRegister._id
+            ? { ...item, status: "Cancelled", cancel_reason: cancelReason }
+            : item
+        )
+      );
+
+      toast.success("Đã hủy đơn đặt bàn thành công!");
+      setShowCancelModal(false);
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi hủy đơn đặt bàn!");
     }
   };
 
-  // Format date
-  const formatDate = (dateString: string) => {
+  const closeModal = () => {
+    setShowCancelModal(false);
+    setSelectedRegister(null);
+    setCancelReason("");
+  };
+
+  const formatCreateDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatEndTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return ` ${hours}:${minutes}`;
+  };
+
+  const showEndTime = (register: RegisterData) => {
+    if (register.status === "Confirmed") {
+      return "Chưa rõ";
+    } else if (register.status === "Cancelled") {
+      return "Không có";
+    } else {
+      return formatEndTime(register.updatedAt);
+    }
   };
 
   return (
     <>
-      <Link
-        href="/admin/manage/register/new"
-        className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 animate-bounce"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-      </Link>
       <div className="flex items-center gap-5 justify-between mb-3 mt-4">
         <Heading>Quản lý khách hàng đặt bàn</Heading>
         <div className="flex gap-3">
@@ -190,9 +207,12 @@ const RegisterManage = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Khách hàng</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Bàn</TableHead>
+                <TableHead>Ngày đặt</TableHead>
                 <TableHead>Thời gian bắt đầu</TableHead>
-                <TableHead>Ngày tạo</TableHead>
+                <TableHead>Thời gian kết thúc</TableHead>
+                <TableHead>Lí do hủy</TableHead>
                 <TableHead>Trạng thái</TableHead>
               </TableRow>
             </TableHeader>
@@ -201,25 +221,31 @@ const RegisterManage = () => {
                 getCurrentPageData().map((register) => (
                   <TableRow className="h-10" key={register._id}>
                     <TableCell className="font-medium px-2">
-                      {register.id_user.username}
+                      {register.id_user.address?.[0]?.name}
+                    </TableCell>
+                    <TableCell className="font-medium px-2">
+                      {register.id_user.address?.[0]?.phone}
                     </TableCell>
                     <TableCell className="font-medium px-2">
                       {register.id_table.name}
                     </TableCell>
                     <TableCell className="font-medium px-2">
-                      {register.start_time}
+                      {formatCreateDate(register.booking_date)}
                     </TableCell>
                     <TableCell className="font-medium px-2">
-                      {formatDate(register.create_at)}
+                      {register.start_time}
                     </TableCell>
-                    {/* <TableCell className="font-medium px-2">
-                      <span
-                        className={`${commonClassNames.status} ${getStatusColor(register.status)} bg-opacity-10 cursor-pointer`}
-                        onClick={() => handleToggleStatus(register)}
-                      >
-                        {register.status}
-                      </span>
-                    </TableCell> */}
+
+                    <TableCell className="font-medium px-2">
+                      {showEndTime(register)}
+                    </TableCell>
+                    <TableCell className="font-medium px-2">
+                      {register.cancel_reason !== "" ? (
+                        <span>{register.cancel_reason}</span>
+                      ) : (
+                        "Không có"
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium px-2">
                       <span
                         className={`${commonClassNames.status} ${getStatusColor(
@@ -229,7 +255,7 @@ const RegisterManage = () => {
                             ? "cursor-pointer"
                             : "cursor-not-allowed"
                         }`}
-                        onClick={() => handleToggleStatus(register)}
+                        onClick={() => openCancelModal(register)}
                         title={
                           register.status === "Confirmed"
                             ? "Nhấn để hủy đơn"
@@ -261,6 +287,57 @@ const RegisterManage = () => {
             />
           )}
         </>
+      )}
+
+      {/* Modal hủy đơn */}
+      {showCancelModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">
+              Xác nhận hủy đơn đặt bàn
+            </h3>
+            <p className="text-base text-gray-600 mb-4 font-medium">
+              Vui lòng chọn lý do hủy đơn:
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {cancelReasons.map((reason, index) => (
+                <div key={index} className="flex items-center">
+                  <input
+                    type="radio"
+                    id={`reason-${index}`}
+                    name="cancelReason"
+                    value={reason}
+                    checked={cancelReason === reason}
+                    onChange={() => setCancelReason(reason)}
+                    className="mr-2"
+                  />
+                  <label
+                    htmlFor={`reason-${index}`}
+                    className="text-sm text-gray-800"
+                  >
+                    {reason}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                onClick={handleCancelBooking}
+              >
+                Xác nhận hủy
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                onClick={closeModal}
+              >
+                Giữ nguyên
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

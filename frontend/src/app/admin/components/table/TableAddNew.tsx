@@ -20,19 +20,23 @@ import { Input } from "@/components/ui/input";
 import { TCreateTableParams } from "../../types";
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên bàn phải có ít nhất 3 ký tự"),
-  position: z.string().min(3, "Vị trí phải có ít nhất 3 ký tự"),
+  name: z.string().nonempty("Tên bàn không được bỏ trống").min(3, "Tên bàn phải có ít nhất 3 ký tự"),
+  position: z.string().optional(),
+  image: z.string().optional(),
 });
 
 function TableAddNew() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       position: "",
+      image: "",
     },
   });
 
@@ -41,9 +45,18 @@ function TableAddNew() {
     try {
       const tableData: TCreateTableParams = {
         name: values.name,
-        position: values.position,
+        position: values.position || "",
+        image: file ? URL.createObjectURL(file) : "",
       };
-      const res = await TableServices.createTable(tableData);
+
+      const formData = new FormData();
+      formData.append("name", tableData.name);
+      formData.append("position", tableData.position);
+      if (file) {
+        formData.append("image", file);
+      }
+      const res = await TableServices.createTable(formData);
+      // const res = await TableServices.createTable(tableData);
 
       if (!res?.success) {
         toast.error(res?.message || "Có lỗi xảy ra");
@@ -56,6 +69,9 @@ function TableAddNew() {
       toast.error("Lỗi khi tạo bàn");
     } finally {
       setIsSubmitting(false);
+      form.reset();
+      setPreviewImage(null);
+      setFile(null);
     }
   }
 
@@ -85,6 +101,42 @@ function TableAddNew() {
                 <FormLabel>Vị trí *</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập vị trí bàn" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                    <input
+                      type="file"
+                      accept="images/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    {previewImage && (
+                      <img
+                        src={previewImage}
+                        alt="Ảnh danh mục"
+                        width={250}
+                        height={250}
+                        className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                      />
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

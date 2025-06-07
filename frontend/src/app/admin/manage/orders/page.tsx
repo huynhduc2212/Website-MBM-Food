@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import orderService from "../../services/OrderServices";
 import styles from "../../styles/order.module.css";
 import Swal from "sweetalert2";
-import { FaArrowLeft } from "react-icons/fa";
+
 
 interface Order {
   _id: string;
   order_code: string;
   id_user: { _id: string };
   createdAt: Date;
-  order_status: "Pending" | "Shipped" | "Delivered" | "Canceled";
+  order_status: "Pending" | "Shipping" | "Delivered" | "Canceled";
   payment_status: "Pending" | "Completed";
   id_payment_method: { _id: string };
   details: { _id: string; id_product: { name: string }; quantity: number; price: number }[];
@@ -19,8 +19,8 @@ interface Order {
 }
 
 const STATUS_FLOW: Record<Order["order_status"], Order["order_status"][]> = {
-  Pending: ["Shipped"],
-  Shipped: ["Delivered"],
+  Pending: ["Shipping"],
+  Shipping: ["Delivered"],
   Delivered: [],
   Canceled: [],
 };
@@ -89,31 +89,70 @@ const OrderManagementPage = () => {
 
   const updateOrderStatus = async (orderId: string, newStatus: Order["order_status"]) => {
     try {
-      const response = await orderService.updateOrderStatus(orderId, { order_status: newStatus });
-      if (!response) {
-        alert("Lỗi khi cập nhật trạng thái đơn hàng!");
-        return;
+      const order = orders.find((o) => o._id === orderId);
+      if (!order) return;
+  
+      // Nếu đơn hàng có MoMo và chưa thanh toán, tự động hủy đơn hàng
+      if (
+        order.order_status === "Pending" && 
+        order.payment_status !== "Completed" && 
+        order.id_payment_method._id !== "67d8351376759d2abe579970" // MoMo (không phải COD)
+      ) {
+        newStatus = "Canceled";
       }
 
-      // Kiểm tra nếu trạng thái mới là "Delivered" và phương thức thanh toán là "Cash" thì cập nhật luôn payment_status
+      const response = await orderService.updateOrderStatus(orderId, { order_status: newStatus });
+      if (!response) {
+        console.error("Lỗi khi cập nhật trạng thái đơn hàng!");
+        return;
+      }
+  
       setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === orderId
-            ? {
-              ...order,
-              order_status: newStatus,
-              payment_status:
-                newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970"
-                  ? "Completed"
-                  : order.payment_status, // Giữ nguyên nếu không phải thanh toán tiền mặt
-            }
-            : order
-        )
+        prevOrders.map((order) => {
+          if (order._id !== orderId) return order;
+  
+          // Nếu thanh toán MOMO và đã thanh toán, tự động chuyển sang "Shipping"
+          if (
+            order.order_status === "Pending" && 
+            order.payment_status === "Completed" && 
+            order.id_payment_method._id !== "67d8351376759d2abe579970" // Không phải COD
+          ) {
+            updateOrderStatus(order._id, "Shipping");
+          }
+  
+          // Nếu đơn hàng chuyển sang "Delivered" và thanh toán COD, cập nhật trạng thái thanh toán
+          if (newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970") {
+            return { ...order, order_status: "Delivered", payment_status: "Completed" };
+          }
+  
+          return { ...order, order_status: newStatus };
+        })
       );
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
+  
+  // Kiểm tra và cập nhật tự động khi điều kiện phù hợp
+  useEffect(() => {
+    orders.forEach((order) => {
+      if (order.order_status === "Pending" && order.payment_status === "Completed" && order.id_payment_method._id !== "67d8351376759d2abe579970") {
+        updateOrderStatus(order._id, "Shipping");
+      }
+      if (
+        order.order_status === "Pending" &&
+        order.id_payment_method._id !== "67d8351376759d2abe579970" && // MoMo
+        order.payment_status !== "Completed" // Chưa thanh toán
+      ) {
+        updateOrderStatus(order._id, "Canceled");
+      }
+      if (order.order_status === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970" && order.payment_status !== "Completed") {
+        updateOrderStatus(order._id, "Delivered");
+      }
+    });
+  }, [orders]); // Chạy khi danh sách đơn hàng thay đổi
+  
+  
 
 
   const handleStatusChange = async (orderId: string, currentStatus: Order["order_status"]) => {
@@ -171,7 +210,7 @@ const OrderManagementPage = () => {
         >
           <option value="">Tất cả trạng thái</option>
           <option value="Pending">Pending</option>
-          <option value="Shipped">Shipped</option>
+          <option value="Shipping">Shipping</option>
           <option value="Delivered">Delivered</option>
           <option value="Canceled">Canceled</option>
         </select>
@@ -181,13 +220,13 @@ const OrderManagementPage = () => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Order</th>
-            <th>Date</th>
-            <th>Items</th>
-            <th>Amount</th>
-            <th className="text-center">Status</th>
-            <th className="text-center">Payment Method</th>
-            <th className="text-center">Payment Status</th>
+            <th>Mã đơn hàng</th>
+            <th>Ngày đặt hàng</th>
+            <th>Sản phẩm</th>
+            <th>Thành tiền</th>
+            <th className="text-center">Trạng thái đơn hàng</th>
+            <th className="text-center">Phương thức thanh toán</th>
+            <th className="text-center">Trạng thái thanh toán</th>
 
           </tr>
         </thead>
@@ -196,7 +235,7 @@ const OrderManagementPage = () => {
             paginatedOrders.map((order) => (
               <tr key={order._id} className={styles.row}>
                 <td>
-                  <a href={`http://localhost:3002/admin/manage/customerList/${order.id_user._id}`}>
+                  <a href={`https://mbmfood.store/admin/manage/custumerList/${order.id_user._id}`}>
                     #{order.order_code}
                   </a>
                 </td>

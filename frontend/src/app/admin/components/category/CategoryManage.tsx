@@ -164,7 +164,7 @@ const CategoryManage = () => {
                     <TableRow key={category.slug}>
                       <TableCell className="pr-20">
                         <div className="flex items-center gap-3">
-                          <Image
+                          <img
                             alt=""
                             src={`${API_URL}/images/${category.image}`}
                             width={100}

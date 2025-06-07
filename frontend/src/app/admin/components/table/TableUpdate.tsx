@@ -18,9 +18,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
+
 const formSchema = z.object({
-  name: z.string().min(3, "Tên bàn phải có ít nhất 3 ký tự"),
-  position: z.string().min(3, "Vị trí phải có ít nhất 3 ký tự"),
+  name: z.string().nonempty("Tên bàn không được bỏ trống").min(3, "Tên bàn phải có ít nhất 3 ký tự"),
+  position: z.string().optional(),
+  image: z.string().optional(),
 });
 
 function TableUpdate() {
@@ -29,12 +32,15 @@ function TableUpdate() {
   const id = searchParams.get("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tableId, setTableId] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       position: "",
+      image: "",
     },
   });
 
@@ -50,11 +56,16 @@ function TableUpdate() {
           return;
         }
 
-        setTableId(res.data._id);
         form.reset({
           name: res.data.name,
           position: res.data.position,
         });
+        setPreviewImage(
+          res.data.image.startsWith("http")
+            ? res.data.image
+            : `${API_URL}/images/${res.data.image}`
+        );
+        setTableId(res.data._id);
       } catch (error) {
         console.error(error);
         toast.error("Lỗi khi tải thông tin bàn");
@@ -69,14 +80,22 @@ function TableUpdate() {
     try {
       const tableData: TCreateTableParams = {
         name: values.name,
-        position: values.position,
+        position: values.position || "",
+        image: file ? URL.createObjectURL(file) : "",
       };
+
+      const formData = new FormData();
+      formData.append("name", tableData.name);
+      formData.append("position", tableData.position);
+      if (file) {
+        formData.append("image", file);
+      }
 
       if (!tableId) {
         toast.error("Không tìm thấy bàn");
         return;
       }
-      const res = await TableServices.updateTable(tableId, tableData);
+      const res = await TableServices.updateTable(tableId, formData);
 
       if (!res?.success) {
         toast.error(res?.message || "Có lỗi xảy ra");
@@ -95,7 +114,7 @@ function TableUpdate() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="grid grid-cols-2 gap-8 mt-10 mb-8">
+        <div className="grid grid-cols-2 gap-8 mt-6 mb-4">
           <FormField
             control={form.control}
             name="name"
@@ -117,6 +136,41 @@ function TableUpdate() {
                 <FormLabel>Vị trí *</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập vị trí" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            render={() => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                    <input
+                      type="file"
+                      accept="images/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    {previewImage && (
+                      <img
+                        src={previewImage}
+                        alt="Ảnh danh mục"
+                        width={250}
+                        height={250}
+                        className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                      />
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -1,7 +1,61 @@
+"use client";
+
 import Image from "next/image";
 import styles from "@/styles/Contact.module.css";
+import ContactServices from "../../services/contact";
+import { sendEmail } from "../../services/contact"; 
+import { useEffect, useState } from "react";
 
 export default function Contact() {
+    const [message, setMessage] = useState<string | null>(null); // 👉 Thêm state lưu thông báo
+  
+    const [formData, setFormData] = useState({
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+  });
+  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
+        if (userId) {
+          const user = await ContactServices.getUserById(userId); // Sử dụng getUserById từ BookingServices
+          if (user) {
+            setFormData({
+              name: user.address[0].name || "", // Cập nhật tên
+              email: user.email || "", // Cập nhật email
+              phone: user.phone || "",
+              message: "", // Để trống phần message
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin người dùng:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, []); // Dùng useEffect để chỉ chạy một lần khi component mount
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage(null); // Reset thông báo trước khi gửi
+  
+    // Gọi hàm sendEmail từ contact.ts
+    const result = await sendEmail(formData);
+  
+    if (result.success) {
+      setMessage(result.message);
+    } else {
+      setMessage(result.message);
+    }
+  };
   return (
     <section className={styles.container}>
       <div className={styles.contentBox}>
@@ -58,7 +112,7 @@ export default function Contact() {
               />
               <div>
                 <h3 className={styles.infoTitle}>Email</h3>
-                <p>support@sapo.vn</p>
+                <p>support@mbm.vn</p>
               </div>
             </div>
           </div>
@@ -68,21 +122,37 @@ export default function Contact() {
             Nếu bạn có thắc mắc gì, có thể gửi yêu cầu cho chúng tôi, và chúng
             tôi sẽ liên lạc lại với bạn sớm nhất có thể.
           </p>
-          <form className={styles.form}>
+          {/* Hiển thị thông báo nếu có */}
+          {message && <div className={styles.message_box}>{message}</div>}
+          <form className={styles.form} onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Họ và tên"
               className={styles.input}
+              onChange={handleChange}
+              name="name"
+              value={formData.name}
             />
-            <input type="email" placeholder="Email" className={styles.input} />
+            <input type="email" 
+            placeholder="Email" 
+            className={styles.input}
+            onChange={handleChange}
+            name="email"
+            value={formData.email} />
             <input
-              type="tel"
+              type="number"
               placeholder="Điện thoại*"
               className={styles.input}
+              onChange={handleChange}
+              name="phone"
+              value={formData.phone}
             />
             <textarea
               placeholder="Nội dung"
               className={styles.textarea}
+              onChange={handleChange}
+              name="message"
+              value={formData.message}
             ></textarea>
             <button type="submit" className={styles.button}>
               Gửi thông tin

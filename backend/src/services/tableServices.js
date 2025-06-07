@@ -6,8 +6,8 @@ exports.getAllTables = async () => {
   return table;
 };
 
-exports.createTable = async (position, status, name) => {
-  const table = new tableModel({ position, status, name });
+exports.createTable = async (position, status, name, image) => {
+  const table = new tableModel({ position, status, name, image });
   await table.save();
   return table;
 };
@@ -17,11 +17,12 @@ exports.getByIdTable = async (id) => {
   return table;
 };
 
-exports.updateTable = async (id, position, status, name) => {
+exports.updateTable = async (id, position, status, name,image) => {
   const table = await tableModel.findByIdAndUpdate(id, {
     position,
     status,
     name,
+    image
   });
   return table;
 };

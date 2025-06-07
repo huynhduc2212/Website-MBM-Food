@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  
+}
+
+@layer utilities {
+  .flexCenter {
+    @apply flex items-center justify-center;
+  }
+}
+
+.table-responsive {
+  @media screen and (max-width: 1023.98px) {
+    th,
+    td {
+      &:not(:first-child) {
+        padding-left: 100px;
+      }
+    }
+  }
+}
+
+html body .swal2-container {
+  .swal2-popup {
+    @apply w-full;
+    max-width: 450px;
+  }
+  .swal2-title {
+    @apply font-bold text-xl;
+  }
+  .swal2-actions {
+    .swal2-confirm {
+      @apply bg-primary;
+    }
+    .swal2-cancel {
+      @apply bg-transparent hover:bg-transparent hover:bg-none;
+    }
+    .swal2-confirm {
+      @apply w-[150px];
+    }
+  }
+}

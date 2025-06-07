@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
 import slugify from "slugify";
-
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 // Import ReactQuill với dynamic import để tránh lỗi Next.js SSR
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -120,22 +120,48 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
     setPost((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+  
+    const fileInput = form.querySelector(
+      'input[name="imageSummary"]'
+    ) as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+  
+    if (file) {
+      formData.set("imageSummary", file); // nếu có file mới
+    } else {
+      formData.set("imageSummary", post.imageSummary); // nếu không có file, giữ ảnh cũ
+    }
+  
+    // Thêm các trường khác thủ công
+    formData.set("author", post.author);
+    formData.set("title", post.title);
+    formData.set("slug", post.slug);
+    formData.set("content", post.content);
+    formData.set("summary", post.summary);
+    formData.set("status", post.status ? "1" : "0");
+    formData.set("hot", post.hot ? "1" : "0");
+  
     try {
-      await newsService.updateNews(id, {
-        ...post,
-        status: post.status ? 1 : 0, // ✅ Chuyển đổi thành 1/0 để lưu vào DB
-        hot: post.hot ? 1 : 0, // 🔥 Chuyển đổi hot thành 1/0
-      });
-      
+      const res = await newsService.updateNews(id, formData);
+  
+      if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
+  
       alert("Bài viết đã được cập nhật!");
       onSuccess();
       onClose();
     } catch (error) {
       alert("Cập nhật thất bại!");
+      console.error("Lỗi cập nhật bài viết:", error);
     }
   };
+  
+
+
 
   return (
     <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
@@ -186,12 +212,26 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
         />
 
         <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
-        <ReactQuill
-          value={post.imageSummary}
-          onChange={(val: string) => handleChange("imageSummary", val)}
-          modules={imageOnlyModules}
-          className="mb-4"
+        <input
+          type="file"
+          accept="image/*"
+          name="variants[0][image]"
+          className="mb-2"
         />
+
+
+        {post.imageSummary && (
+          <img
+          src={
+            post.imageSummary
+                ? `${API_URL}/images/${post.imageSummary}`
+                : "/placeholder.jpg"
+        }
+            alt="Preview"
+            className="mb-4 max-h-48 rounded"
+          />
+        )}
+
 
         <label className="block font-bold mb-2 flex items-center">
           <input

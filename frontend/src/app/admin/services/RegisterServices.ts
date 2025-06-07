@@ -1,5 +1,4 @@
-
-const API_URL = "http://localhost:3001/api/registers";
+const API_URL = `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/registers`;
 
 const getAllRegisters = async () => {
   try {
@@ -17,6 +16,7 @@ const getAllRegisters = async () => {
 const updateRegisterStatus = async (
   id: string,
   status: string,
+  note: string
 ) => {
   const response = await fetch(`${API_URL}/${id}/status`, {
     method: "PUT",
@@ -25,6 +25,7 @@ const updateRegisterStatus = async (
     },
     body: JSON.stringify({
       status,
+      note,
     }),
   });
 
@@ -38,6 +39,6 @@ const updateRegisterStatus = async (
 const RegisterServices = {
   getAllRegisters,
   // getTableById,
-  updateRegisterStatus
+  updateRegisterStatus,
 };
 export default RegisterServices;

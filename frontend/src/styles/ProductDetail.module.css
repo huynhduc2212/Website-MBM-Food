@@ -141,12 +141,10 @@
   margin-top: 0em;
   unicode-bidi: isolate;
 }
-.price {
+.price_container {
   margin-bottom: 20px;
-  font-size: 30px;
-  font-weight: bold;
-  color: #e31837;
-  display: inline-block;
+  display: block;
+  unicode-bidi: isolate;
 }
 .formProduct {
   display: block;
@@ -341,12 +339,13 @@
 }
 .order_3{
   flex: 0 0 75%;
-        max-width: 75%;
-        order: 3;
-        position: relative;
-        width: 100%;
-        padding-right: 15px;
-        padding-left: 15px;
+  max-width: 75%;
+  order: 1;
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 30px;
 }
 .product_lq{
   margin-top: 30px;
@@ -378,4 +377,277 @@
   display: flex;
   transition-property: transform;
   box-sizing: content-box;
+}
+
+.col4{
+  flex: 0 0 25%;
+  max-width: 25%;
+  order: 2;
+}
+.blockBlog{
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+.title{
+  margin-bottom: 15px;
+  position: relative;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  display: block;
+  background: #006a31;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.blog_small{
+  margin-bottom: 10px;
+  display: flex;
+}
+.block_thumb{
+  min-width: 100px;
+  width: 100px;
+}
+.block_content{
+  min-width: calc(100% - 100px);
+  width: calc(100% - 100px);
+  margin-left: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  position: relative;
+  line-height: 1.4 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 !important;
+  word-break: break-word;
+  -webkit-line-clamp: 2;
+}
+.aside_news_item{
+  display: flex;
+  margin-bottom: 20px;
+}
+.imageThum{
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  -os-display: flex;
+  -webkit-justify-content: center;
+  align-items: center;
+  position: relative;
+  height: auto !important;
+  padding-bottom: 100%;
+}
+.productThumnail{
+  position: relative;
+}
+.img{
+  width: auto !important;
+  max-height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  will-change: opacify;
+  transition: 0.3s all ease-in-out;
+  vertical-align: middle;
+  border-style: none;
+  max-width: 100%;
+  height: auto;
+}
+.whistList{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.productInfo{
+  padding: 10px;
+    background: #fff;
+}
+.productName{
+  font-size: 16px;
+  font-weight: 700;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  position: relative;
+  line-height: 1.4 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 !important;
+  word-break: break-word;
+  -webkit-line-clamp: 1;
+}
+.productContent{
+  margin-bottom: 10px;
+  min-height: 60.2px;
+}
+.ProductDesc{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  position: relative;
+  line-height: 1.4 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 !important;
+  word-break: break-word;
+  -webkit-line-clamp: 2;
+}
+.productContent a{
+  color: #e31837;
+  text-decoration: none;
+    background-color: transparent;
+}
+.groupForm{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.priceBox{
+  margin-bottom: 5px;
+  position: relative;
+  color: #e31837;
+  font-weight: 700;
+  font-size: 14px;
+}
+.priceBox span{
+  color: #000;
+  font-weight: 500;
+  display: block;
+}
+.add{
+  background: #006a31;
+  border: 0;
+  border-radius: 5px;
+  padding: 2px 2px;
+  font-size: 16px;
+  font-weight: 700;
+  width: 120px;
+  color: #fff;
+}
+.relatedSection{
+  margin-top: 30px;
+  background: #fff;
+  border-radius: 15px;
+}
+.productAction{
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.5s ease;
+  box-shadow: 0 0px 2px 0 rgba(60, 64, 67, 0.1), 0 0px 6px 0px rgba(60, 64, 67, 0.25);
+  background: #fff;
+  height: 100%;
+}
+.More{
+  background-color: red;
+}
+.oldPrice{
+  color: #545454;
+  font-size: 16px;
+  display: inline-block;
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+.price{
+  font-size: 30px;
+  font-weight: bold;
+  color: #e31837;
+}
+.savePriceValue{
+  color: #e31837;
+}
+
+@media (max-width: 768px) {
+  .row, .rowFix {
+    flex-direction: column;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .productLeft,
+  .form,
+  .order_3,
+  .colFix,
+  .col4 {
+    max-width: 100%;
+    flex: 0 0 100%;
+    padding: 0 10px;
+  }
+
+  .tittleVoucher {
+    font-size: 16px;
+    padding: 5px 10px;
+    top: -20px;
+  }
+
+  .voucherContainer,
+  .descContainer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .descTit {
+    font-size: 20px;
+  }
+
+  .descContent h3 {
+    font-size: 1.2rem;
+  }
+
+  .titleProduct {
+    font-size: 20px;
+  }
+
+  .labelNote {
+    font-size: 18px;
+  }
+
+  .btnNum,
+  .quantityShow {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .add {
+    font-size: 14px;
+    height: 45px;
+  }
+
+  .heart {
+    width: 45px;
+    height: 45px;
+  }
+
+  .groupBtn {
+    flex-direction: column;
+  }
+
+  .buyNow,
+  .booking {
+    width: 100%;
+    height: 45px;
+    font-size: 14px;
+  }
+
+  .hotline a {
+    font-size: 14px;
+  }
+
+  .block_thumb {
+    min-width: 80px;
+    width: 80px;
+  }
+
+  .block_content {
+    width: calc(100% - 80px);
+  }
+
+  .titleName {
+    font-size: 20px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
 }

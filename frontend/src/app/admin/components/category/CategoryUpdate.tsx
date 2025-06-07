@@ -18,13 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
+// import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên danh mục không được bỏ trống")
+    .min(6, "Tên danh mục phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
   image: z.string().optional(),
@@ -138,7 +141,7 @@ function CategoryUpdate() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="grid grid-cols-2 gap-8 mt-10 mb-8">
+        <div className="grid grid-cols-2 gap-8 mt-6 mb-4">
           <FormField
             control={form.control}
             name="name"
@@ -165,60 +168,60 @@ function CategoryUpdate() {
               </FormItem>
             )}
           />
-       
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả danh mục</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Nhập mô tả..."
-                  {...field}
-                  className="h-[250px]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="image"
-          render={() => (
-            <FormItem>
-              <FormLabel>Ảnh đại diện</FormLabel>
-              <FormControl>
-                <div className="border border-gray-300 p-2 rounded-md h-[250px]">
-                  <input
-                    type="file"
-                    accept="images/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setFile(file);
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả danh mục</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Nhập mô tả..."
+                    {...field}
+                    className="h-[250px]"
                   />
-                  {previewImage && (
-                    <Image
-                      src={previewImage}
-                      alt="Ảnh danh mục"
-                      width={250}
-                      height={250}
-                      className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            render={() => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <div className="border border-gray-300 p-2 rounded-md h-[250px]">
+                    <input
+                      type="file"
+                      accept="images/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }
+                      }}
                     />
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-         </div>
+                    {previewImage && (
+                      <img
+                        src={previewImage}
+                        alt="Ảnh danh mục"
+                        width={250}
+                        height={250}
+                        className="h-[200px] w-auto rounded-lg object-cover mt-2"
+                      />
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button
           isLoading={isSubmitting}

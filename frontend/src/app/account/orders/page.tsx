@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import orderService from "../../admin/services/OrderServices";
+import styles from "../../../styles/AddressTable.module.css"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
 
@@ -24,19 +25,61 @@ export default function AddressTable() {
     const fetchOrders = async (userId: string) => {
         try {
             const data = await orderService.getOrdersByUserId(userId);
-            const ordersWithDetails = data.orders.map((order: any) => ({
+            let ordersWithDetails = data.orders.map((order: any) => ({
                 ...order,
                 details: data.orderDetails.filter((detail: any) => detail.id_order === order._id) || [],
             }));
-            setOrders(ordersWithDetails);
+    
+            // 🔥 Kiểm tra và cập nhật trạng thái đơn hàng MoMo
+            const updatedOrders = await Promise.all(
+                ordersWithDetails.map(async (order: any) => {
+                    // Nếu là MoMo, chưa thanh toán -> tự động hủy đơn hàng
+                    if (
+                        order.id_payment_method?._id !== "67d8351376759d2abe579970" && // Không phải COD (tức là MoMo)
+                        order.order_status === "Pending" &&
+                        order.payment_status !== "Completed"
+                    ) {
+                        try {
+                            await orderService.updateOrderStatus(order._id, { order_status: "Canceled" });
+                            return { ...order, order_status: "Canceled" };
+                        } catch (err) {
+                            console.error("Lỗi khi cập nhật trạng thái MOMO:", err);
+                        }
+                    }
+    
+                    // ✅ Nếu MoMo đã thanh toán -> chuyển trạng thái đơn hàng sang "Shipping"
+                    if (
+                        order.id_payment_method?._id !== "67d8351376759d2abe579970" && // Không phải COD (tức là MoMo)
+                        order.order_status === "Pending" &&
+                        order.payment_status === "Completed"
+                    ) {
+                        try {
+                            await orderService.updateOrderStatus(order._id, { order_status: "Shipping" });
+                            return { ...order, order_status: "Shipping" };
+                        } catch (err) {
+                            console.error("Lỗi khi cập nhật trạng thái MOMO:", err);
+                        }
+                    }
+    
+                    return order;
+                })
+            );
+    
+            setOrders(updatedOrders);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng:", err);
         } finally {
             setLoading(false);
         }
     };
+    
 
-    const cancelOrder = async (orderId: string) => {
+
+    const cancelOrder = async (order: any) => {
+        if (order.id_payment_method?._id !== "67d8351376759d2abe579970") {
+            return Swal.fire("Không thể hủy!", "Chỉ có thể hủy đơn hàng thanh toán bằng tiền mặt.", "warning");
+        }
+
         const result = await Swal.fire({
             title: "Bạn có chắc chắn muốn hủy đơn hàng này?",
             text: "Hành động này không thể hoàn tác!",
@@ -51,11 +94,9 @@ export default function AddressTable() {
         if (!result.isConfirmed) return;
 
         try {
-            await orderService.updateOrderStatus(orderId, { order_status: "Canceled" });
+            await orderService.updateOrderStatus(order._id, { order_status: "Canceled" });
             setOrders((prevOrders) =>
-                prevOrders.map((order) =>
-                    order._id === orderId ? { ...order, order_status: "Canceled" } : order
-                )
+                prevOrders.map((o) => (o._id === order._id ? { ...o, order_status: "Canceled" } : o))
             );
             Swal.fire("Đã hủy!", "Đơn hàng của bạn đã được hủy.", "success");
         } catch (error) {
@@ -63,6 +104,7 @@ export default function AddressTable() {
             Swal.fire("Lỗi!", "Có lỗi xảy ra, vui lòng thử lại.", "error");
         }
     };
+
 
     const sortedOrders = [...orders].sort((a, b) => {
         if (!sortConfig) return 0;
@@ -93,14 +135,15 @@ export default function AddressTable() {
     if (!orders.length) return <p>Không tìm thấy đơn hàng nào!</p>;
 
     return (
-        <div className="container mt-4">
+        <div className={`container ${styles["table-container"]}`}>
             <h5 className="mb-3">📦 ĐƠN HÀNG CỦA BẠN</h5>
-            <table className="table table-striped table-bordered text-center ">
-                <thead className="table-dark">
-                    <tr>
+            <table className={styles["table-custom"]}>
+              <thead >
+                    <tr >
                         <th onClick={() => requestSort("order_code")} style={{ cursor: "pointer" }}>Mã đơn hàng 🔽</th>
                         <th>Ngày đặt hàng</th>
                         <th>Khách hàng</th>
+                        <th>Phương thức thanh toán</th>
                         <th onClick={() => requestSort("order_status")} style={{ cursor: "pointer" }}>Trạng thái 🔽</th>
                         <th onClick={() => requestSort("total_amount")} style={{ cursor: "pointer" }}>Tổng tiền 🔽</th>
                         <th>Chi tiết đơn hàng</th>
@@ -118,7 +161,13 @@ export default function AddressTable() {
                                 📞 {order.phone}
                             </td>
                             <td>
-                                <span className={`badge ${order.order_status === "Pending" ? "bg-warning" : order.order_status === "Shipped" ? "bg-primary" : order.order_status === "Delivered" ? "bg-success" : "bg-danger"}`}>
+                                <span className={`badge ${order.id_payment_method?._id === "67d8351376759d2abe579970" ? "bg-secondary" : "bg-info text-dark"}`}>
+                                    {order.id_payment_method?._id === "67d8351376759d2abe579970" ? "Cash" : "MOMO"}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span className={`badge ${order.order_status === "Pending" ? "bg-warning" : order.order_status === "Shipping" ? "bg-primary" : order.order_status === "Delivered" ? "bg-success" : "bg-danger"}`}>
                                     {order.order_status}
                                 </span>
                             </td>
@@ -141,12 +190,13 @@ export default function AddressTable() {
                                 )}
                             </td>
                             <td>
-                                {order.order_status === "Pending" && (
-                                    <button className="btn btn-danger btn-sm" onClick={() => cancelOrder(order._id)}>
+                                { order.order_status === "Pending" &&(
+                                    <button className="btn btn-danger btn-sm" onClick={() => cancelOrder(order)}>
                                         Hủy đơn
                                     </button>
                                 )}
                             </td>
+
                         </tr>
                     ))}
                 </tbody>

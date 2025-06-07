@@ -5,12 +5,16 @@ import { TCreateRegisterParams } from "@/types/enum";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
+
+const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 interface Table {
   _id: string;
   name: string;
   position: string;
   status: "Available" | "Reserved";
+  image: string;
 }
 
 interface Address {
@@ -31,6 +35,8 @@ const Booking = () => {
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -136,14 +142,14 @@ const Booking = () => {
     try {
       setLoading(true);
 
-      const creatAt = formData.bookingDate;
+      const bookingDate = formData.bookingDate;
       const startTime = formData.bookingTime;
 
       const registerData: TCreateRegisterParams = {
         id_user: userData._id,
         id_table: selectedTable,
         start_time: startTime,
-        create_at: creatAt,
+        booking_date: bookingDate,
         status: "Confirmed",
       };
 
@@ -215,6 +221,16 @@ const Booking = () => {
               </div>
             </div>
           </div>
+          {previewImage && (
+            <div className="fixed bottom-[280px] sm:left-[320px] left-0 z-50 rounded-lg sm:w-[600px] sm:h-[350px] p-3 flex items-center justify-center">
+              <img
+                src={previewImage}
+                alt="Preview Table"
+                className="w-full h-full object-cover rounded-2xl border-[6px] border-white shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+              />
+            </div>
+          )}
+
           <div className="2xl:flex-[0_1_50%] md:w-full w-full sm:w-full 2xl:mt-0 xl:mt-0 lg:mt-0 md:mt-5 sm:mt-5 xl:flex-[0_1_50%] lg:flex-[0_1_50%] xmall:mt-5">
             <div className="thumb-time rounded-lg bg-[#006a31] p-4 h-full">
               <form className="space-y-4" onSubmit={handleSubmit}>
@@ -288,29 +304,57 @@ const Booking = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 justify-center mt-4">
-                  {dataTable?.map((table, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 ${
-                        table.status === "Reserved"
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : selectedTable === table._id
-                          ? "bg-red-600"
-                          : "bg-green-500 hover:bg-red-600"
-                      }`}
-                      onClick={() => handleTableSelection(table._id)}
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                      disabled={table.status === "Reserved"}
-                    >
-                      {table.status === "Reserved"
-                        ? "Đã đặt"
-                        : hoveredIndex === index
-                        ? "Đặt bàn"
-                        : table.name}
-                    </button>
-                  ))}
+                  {dataTable.map((table, index) => {
+                    const isReserved = table.status === "Reserved";
+                    const isSelected = selectedTable === table._id;
+                    const isHovered = hoveredIndex === index;
+
+                    const imgPath = `${API_URL}/images/${table.image}`;
+
+                    return (
+                      <div
+                        key={table._id}
+                        className="relative flex flex-col items-center"
+                      >
+                        <button
+                          type="button"
+                          className={`relative sm:w-32 sm:h-32 w-16 h-16 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
+                            isReserved
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : isSelected
+                              ? "bg-red-600 text-white"
+                              : "text-white text-lg font-extrabold drop-shadow-[0_0_4px_#ffffff] hover:bg-red-600"
+                          }`}
+                          onClick={() => handleTableSelection(table._id)}
+                          onMouseEnter={() => {
+                            setHoveredIndex(index);
+                            setPreviewImage(imgPath);
+                            setPreviewIndex(index);
+                          }}
+                          onMouseLeave={() => {
+                            setHoveredIndex(null);
+                            setPreviewImage(null);
+                            setPreviewIndex(null);
+                          }}
+                          disabled={isReserved}
+                        >
+                          {!isReserved && !isSelected && (
+                            <Image
+                              src="/images/tablebg.png"
+                              fill
+                              alt="Ảnh bàn"
+                              className=""
+                            />
+                          )}
+                          {isReserved
+                            ? "Đã đặt"
+                            : isHovered
+                            ? "Đặt bàn"
+                            : table.name}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="text-center mt-4">

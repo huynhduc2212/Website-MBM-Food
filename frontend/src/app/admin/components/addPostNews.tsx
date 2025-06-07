@@ -4,27 +4,17 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
+import slugify from "slugify";
 
-// Định nghĩa interface cho props
-interface PostEditorProps {
-  onClose?: () => void;
-  onSuccess?: () => Promise<void>;
-}
+// Dynamic import ReactQuill
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false }) as unknown as React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  modules?: Record<string, any>;
+  className?: string;
+}>;
 
-// Định nghĩa kiểu dữ liệu bài viết
-interface PostData {
-  author: string;
-  title: string;
-  content: string;
-  summary: string;
-  imageSummary: string;
-  view: number;
-  hot: number;
-  status: number;
-}
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
+// Modules
 const fullModules = {
   toolbar: {
     container: [
@@ -36,7 +26,7 @@ const fullModules = {
       [{ header: "1" }, { header: "2" }, { font: [] }],
     ],
     handlers: {
-      image: function (this: { quill: any }) {
+      image: function (this: any) {
         const editor = this.quill;
         const imageUrl = prompt("Nhập URL của hình ảnh:");
         if (imageUrl) {
@@ -52,45 +42,64 @@ const textOnlyModules = {
   toolbar: [["bold", "italic", "underline"], ["blockquote"]],
 };
 
-const imageOnlyModules = {
-  toolbar: {
-    container: [["image"]],
-    handlers: {
-      image: function (this: { quill: any }) {
-        const editor = this.quill;
-        const imageUrl = prompt("Nhập URL của hình ảnh:");
-        if (imageUrl) {
-          editor.setContents([{ insert: { image: imageUrl } }]);
-        }
-      },
-    },
-  },
-};
+// Kiểu dữ liệu
+interface PostData {
+  author: string;
+  title: string;
+  slug: string;
+  content: string;
+  summary: string;
+  imageSummary: string;
+  status: boolean;
+  hot: boolean;
+}
+
+interface PostEditorProps {
+  onClose?: () => void;
+  onSuccess?: () => Promise<void>;
+}
 
 export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
   const [post, setPost] = useState<PostData>({
     author: "",
     title: "",
+    slug: "",
     content: "",
     summary: "",
     imageSummary: "",
-    view: 0,
-    hot: 0,
-    status: 1,
+    status: true,
+    hot: false,
   });
 
-  const handleChange = (field: keyof PostData, value: string | number) => {
-    setPost((prev) => ({ ...prev, [field]: value }));
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleChange = (key: keyof PostData, value: string | boolean) => {
+    setPost((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("author", post.author);
+    formData.append("title", post.title);
+    formData.append("slug", post.slug);
+    formData.append("content", post.content);
+    formData.append("summary", post.summary);
+    formData.append("status", post.status ? "1" : "0");
+    formData.append("hot", post.hot ? "1" : "0");
+
+    if (imageFile) {
+      formData.append("variants[0][image]", imageFile);
+
+    }
+
     try {
-      await newsService.addNews(post);
+      const res = await newsService.addNews(formData);
+
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       alert("Bài viết đã được đăng!");
 
-      // Gọi callback nếu có
       if (onSuccess) await onSuccess();
       if (onClose) onClose();
     } catch (error) {
@@ -100,102 +109,102 @@ export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
   };
 
   return (
-    <div className="container mt-4">
-      <div className="card shadow-lg">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h3>Đăng Bài Viết</h3>
-          {onClose && (
-            <button className="btn btn-danger" onClick={onClose}>
-              ✖
-            </button>
-          )}
-        </div>
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Tên người đăng bài</label>
-              <input
-                type="text"
-                className="form-control"
-                value={post.author}
-                onChange={(e) => handleChange("author", e.target.value)}
-                required
-              />
-            </div>
+    <div className="container mx-auto p-4 max-w-3xl bg-white shadow rounded">
+      <h1 className="text-center text-2xl font-bold mb-4">Đăng Bài Viết</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Tên người đăng bài"
+          className="w-full p-2 border rounded mb-3"
+          value={post.author}
+          onChange={(e) => handleChange("author", e.target.value)}
+          required
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Tiêu đề</label>
-              <input
-                type="text"
-                className="form-control"
-                value={post.title}
-                onChange={(e) => handleChange("title", e.target.value)}
-                required
-              />
-            </div>
+        <input
+          type="text"
+          placeholder="Tiêu đề"
+          className="w-full p-2 border rounded mb-3"
+          value={post.title}
+          onChange={(e) => {
+            const val = e.target.value;
+            handleChange("title", val);
+            handleChange("slug", slugify(val, { lower: true }));
+          }}
+          required
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Nội dung bài viết</label>
-              <ReactQuill
-                value={post.content}
-                onChange={(value: string) => handleChange("content", value)}
-                modules={fullModules}
-                className="form-control"
-                {...({} as any)}
-              />
-            </div>
+        <input
+          type="text"
+          placeholder="Slug URL"
+          className="w-full p-2 border rounded mb-3"
+          value={post.slug}
+          onChange={(e) => handleChange("slug", e.target.value)}
+          required
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Tóm tắt bài viết</label>
-              <ReactQuill
-                value={post.summary}
-                onChange={(value: string) => handleChange("summary", value)}
-                modules={textOnlyModules}
-                className="form-control"
-                {...({} as any)}
-              />
-            </div>
+        <label className="block font-bold mb-2">Nội dung bài viết:</label>
+        <ReactQuill
+          value={post.content}
+          onChange={(val) => handleChange("content", val)}
+          modules={fullModules}
+          className="mb-4"
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Hình ảnh tóm tắt</label>
-              <ReactQuill
-                value={post.imageSummary}
-                onChange={(value: string) => handleChange("imageSummary", value)}
-                modules={imageOnlyModules}
-                className="form-control"
-                {...({} as any)}
-              />
-            </div>
+        <label className="block font-bold mb-2">Tóm tắt bài viết:</label>
+        <ReactQuill
+          value={post.summary}
+          onChange={(val) => handleChange("summary", val)}
+          modules={textOnlyModules}
+          className="mb-4"
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Số lượt xem</label>
-              <input
-                type="number"
-                className="form-control"
-                value={post.view}
-                onChange={(e) => handleChange("view", Number(e.target.value))}
-                required
-              />
-            </div>
+        <label className="block font-bold mb-2">Hình ảnh tóm tắt:</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setImageFile(file);
+              handleChange("imageSummary", file.name);
+            }
+          }}
+          className="mb-2"
+        />
 
-            <div className="mb-3">
-              <label className="form-label">Nổi bật</label>
-              <select
-                className="form-select"
-                value={post.hot}
-                onChange={(e) => handleChange("hot", Number(e.target.value))}
-              >
-                <option value={0}>Không</option>
-                <option value={1}>Có</option>
-              </select>
-            </div>
+        {imageFile && (
+          <img
+            src={URL.createObjectURL(imageFile)}
+            alt="Preview"
+            className="mb-4 max-h-48 rounded"
+          />
+        )}
 
-            <button type="submit" className="btn btn-primary w-100">
-              Đăng bài
-            </button>
-          </form>
-        </div>
-      </div>
+        <label className="block font-bold mb-2 flex items-center">
+          <input
+            type="checkbox"
+            className="mr-2"
+            checked={post.status}
+            onChange={(e) => handleChange("status", e.target.checked)}
+          />
+          Kích hoạt bài viết
+        </label>
+
+        <label className="block font-bold mb-4 flex items-center">
+          <input
+            type="checkbox"
+            className="mr-2"
+            checked={post.hot}
+            onChange={(e) => handleChange("hot", e.target.checked)}
+          />
+          🔥 Đánh dấu bài viết hot
+        </label>
+
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
+          Đăng bài
+        </button>
+      </form>
     </div>
   );
 }

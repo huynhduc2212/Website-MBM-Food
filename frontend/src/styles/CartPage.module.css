@@ -120,7 +120,21 @@
 }
 .removebtn{
     display: block;
-    color: #006a31;
+    color: white;
+    background-color: #006a31;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    min-width: 60px;
+    text-decoration: none;
+}
+.removebtn:hover{
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+    padding: 5px 10px;
 }
 .grid{
     width: 20%;
@@ -155,9 +169,13 @@
     border-radius: 5px;
     padding: 2px;
 }
-.qtyBtnCart{
-    
+.qtyBtnCart {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
 }
+
 .qtybtn{
     font-size: 20px;
     line-height: 0px;
@@ -208,15 +226,19 @@
     font-weight: 500;
     margin-bottom: 12px;
     display: flex;
+    justify-content: space-between; /* Đẩy 2 bên */
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
 .cartCol{
     width: 50%;
     float: left;
+    text-align: left;
 }
 .textRight{
     width: 50%;
     float: left;
     text-align: right;
+    
 }
 .totalPrice{
     color: #e31837;
@@ -244,3 +266,98 @@
     vertical-align: middle;
     margin: 0 auto; 
 }
+
+/* Đối với thiết bị di động */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        margin: 0;
+    }
+    
+    .cartLeft {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .cartHeaderInfo {
+        display: none; /* Ẩn header info trên mobile cho gọn */
+    }
+
+    .ajaxCartRow .grid:last-child {
+        display: none;
+    }
+
+    .cartHeaderInfo div {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .ajaxCartProduct {
+        /* align-items: flex-start; */
+    }
+
+    .gridItemInfo {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .cartFooter {
+        padding: 0 10px;
+    }
+
+    .offSet {
+        margin-left: 0;
+        width: 100%;
+        padding: 0;
+    }
+
+    .cartSubTotal {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .cartCol, .textRight {
+        width: 100%;
+        text-align: left;
+    }
+
+    .cartBtnCheckOut {
+        font-size: 16px;
+        line-height: 45px;
+    }
+
+    .cartSubTotal {
+        flex-direction: row; /* giữ theo hàng ngang */
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+    }
+
+    .cartCol {
+        width: auto;
+        text-align: left;
+    }
+
+    .textRight {
+        width: auto;
+        text-align: right;
+    }
+
+    .ajaxCartProduct .grid {
+        width: 30%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .VariantTitle {
+        display: none;
+    }
+    .ajaxCartProduct .gridQuantity {
+        margin-right: 16px;
+    }
+
+}
+
+
+
+

@@ -1,8 +1,8 @@
 const Order = require("../models/Order");
 const OrderDetail = require("../models/OrderDetail");
-// const PaymentMethod = require("../models/PaymentMethod");
+const axios = require("axios");
 const mongoose = require("mongoose");
-// const Coupon = require("../models/CouponModel");
+
 class OrderService {
   async updateOrder(orderId, updateData) {
     try {
@@ -126,6 +126,65 @@ class OrderService {
     }
   }
   
+  async getTop5SellingProducts() {
+    try {
+      const topProducts = await OrderDetail.aggregate([
+        {
+          $group: {
+            _id: "$id_product",
+            totalSold: { $sum: "$quantity" }, // Tính tổng số lượng đã bán
+          },
+        },
+        { $sort: { totalSold: -1 } }, // Sắp xếp theo số lượng bán giảm dần
+        { $limit: 5 }, // Chỉ lấy 5 sản phẩm bán chạy nhất
+      ]);
+  
+      if (topProducts.length === 0) {
+        console.log("⚠️ Không có sản phẩm nào được bán.");
+        return [];
+      }
+  
+      // Lấy danh sách ID sản phẩm
+      const productIds = topProducts.map((product) => product._id.toString());
+  
+  
+      // Gọi API để lấy thông tin sản phẩm
+      return await this.fetchProductDetails(productIds);
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy sản phẩm bán chạy:", error.message);
+      throw new Error("Lỗi khi lấy sản phẩm bán chạy: " + error.message);
+    }
+  }
+  
+  
+
+  async fetchProductDetails(productIds) {
+    try {
+      if (!productIds.length) {
+        throw new Error("Không có sản phẩm nào để lấy thông tin.");
+      }
+  
+      // Tạo một array chứa các promises của từng yêu cầu API
+      const productPromises = productIds.map((id) =>
+        axios.get(`https://mbmfood.store/api/products/${id}`)
+      );
+  
+      // Chờ tất cả các promises hoàn thành
+      const responses = await Promise.all(productPromises);
+  
+      // Lấy dữ liệu từ các responses
+      const products = responses.map((response) => response.data);
+  
+  
+      return products;
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy thông tin sản phẩm:", error.message);
+      throw new Error("Lỗi khi lấy thông tin sản phẩm: " + error.message);
+    }
+  }
+  
+  
+
 
   async getOrderById(orderId) {
     const order = await Order.findById(orderId)
@@ -145,7 +204,7 @@ class OrderService {
 
 
   async updateOrderStatus(id, order_status) {
-    if (!["Pending", "Shipped", "Delivered", "Canceled"].includes(order_status)) {
+    if (!["Pending", "Shipping", "Delivered", "Canceled"].includes(order_status)) {
         throw new Error("Trạng thái không hợp lệ");
     }
 
@@ -155,18 +214,27 @@ class OrderService {
         throw new Error("Không tìm thấy đơn hàng");
     }
 
-    // Cập nhật trạng thái đơn hàng
     let updateData = { order_status };
 
-    // Nếu trạng thái mới là "Delivered" và phương thức thanh toán là "67d8351376759d2abe579970"
+    // Nếu trạng thái mới là "Delivered" và phương thức thanh toán là tiền mặt (Cash)
     if (order_status === "Delivered" && order.id_payment_method.toString() === "67d8351376759d2abe579970") {
         updateData.payment_status = "Completed";
+    }
+
+    // Nếu phương thức thanh toán là MOMO và đã hoàn thành thanh toán, tự động chuyển trạng thái đơn hàng thành "Shipping"
+    if (
+        order.id_payment_method.toString() !== "67d8351376759d2abe579970" && // Không phải thanh toán tiền mặt (Cash)
+        order.payment_status === "Completed" && // Thanh toán đã hoàn tất
+        order_status !== "Shipping" // Đảm bảo không ghi đè khi đã là "Shipping"
+    ) {
+        updateData.order_status = "Shipping";
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(id, updateData, { new: true });
 
     return updatedOrder;
 }
+
 
 
   async deleteOrder(orderId) {

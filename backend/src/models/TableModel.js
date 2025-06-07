@@ -10,6 +10,7 @@ const tableSchema = new Schema(
       default: "Available",
     },
     name: { type: String, required: true },
+    image:{ type: String },
   },
   { timestamps: true }
 );

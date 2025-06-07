@@ -21,9 +21,12 @@ import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự"),
+  title: z
+    .string()
+    .nonempty("Tên banner không được bỏ trống")
+    .min(6, "Tiêu đề phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
-  image: z.string().optional(),
+  image: z.string().min(1, "Ảnh không được để trống"),
 });
 
 function BannerAddNew() {
@@ -63,7 +66,7 @@ function BannerAddNew() {
         return;
       }
       toast.success("Tạo banner thành công");
-      router.push("/admin/manage/banner/new");
+      router.push("/admin/manage/banner");
     } catch (error) {
       console.error(error);
       toast.error("Lỗi khi tạo banner");
@@ -132,7 +135,7 @@ function BannerAddNew() {
                       }}
                     />
                     {previewImage && (
-                      <Image
+                      <img
                         src={previewImage}
                         alt="Ảnh banner"
                         width={250}

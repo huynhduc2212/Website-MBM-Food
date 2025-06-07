@@ -6,6 +6,7 @@ import styles from "../../styles/CartPage.module.css";
 import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 
+
 interface CartItem {
   _id: string; 
   name: string;
@@ -14,6 +15,7 @@ interface CartItem {
   quantity: number;
   image: string;
   variants?: string;
+  note?: string;
 }
 
 const CartPage = () => {
@@ -33,6 +35,7 @@ const CartPage = () => {
         quantity: item.quantity || 1,
         image: item.image || "default.jpg",
         variants: item.option ? item.option : undefined,
+        note:item.note || "Không có ghi chú"
       }));
   
       setCart(formattedCart);
@@ -76,10 +79,7 @@ const CartPage = () => {
 
   const getTotalPrice = () => {
     return cart.reduce(
-      (total, item) =>
-        total + (item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity,
-      0
-    );
+      (total, item) =>total + (item.price * item.quantity),0);
   };
 
   const handleCheckout = () => {
@@ -122,9 +122,9 @@ const CartPage = () => {
                     <div key={item._id} className={styles.cartBody}>
                       <div className={styles.ajaxCartRow}>
                         <div className={styles.ajaxCartProduct}>
-                          <Image
+                          <img
                             className={styles.ajaxImage}
-                            src={`http://localhost:3001/images/${item.image}`}
+                            src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${item.image}`}
                             alt={item.name}
                             width={100}
                             height={100}
@@ -135,6 +135,12 @@ const CartPage = () => {
                               {item.variants && (
                                 <span className={styles.VariantTitle}>{item.variants}</span>
                               )}
+                              {item.note && (
+                                <div className={styles.note}>
+                                  <span className={styles.VariantTitle}>Ghi chú: {item.note}</span> 
+                                </div>
+                              )}
+
                               <button
                                 className={styles.removebtn}
                                 onClick={() => removeItem(item._id)}
@@ -145,13 +151,11 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {item.sale_price && item.sale_price > 0
-                                    ? item.sale_price
-                                    : item.price.toLocaleString()} đ
+                                  {item.price.toLocaleString()} đ
                                 </span>
                               </div>
                             </div>
-                            <div className={styles.grid}>
+                            <div className={`${styles.grid} ${styles.gridQuantity}`}>
                               <div className={styles.cartSelect}>
                                 <div className={styles.qtyBtnCart}>
                                   <button
@@ -173,7 +177,7 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {((item.sale_price && item.sale_price > 0 ? item.sale_price : item.price) * item.quantity).toLocaleString()} đ
+                                  {(item.price * item.quantity).toLocaleString()} đ
                                 </span>
                               </div>
                             </div>

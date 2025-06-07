@@ -1,0 +1,133 @@
+
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.card h5 {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.card p {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* DetailUser.module.css */
+.card a {
+    color: #28a745;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+.card .text-muted {
+    color: #6c757d;
+}
+
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+.table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.table td a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.table td a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+.badge {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.float-end {
+    float: right;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    color: white;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.card .text-muted {
+    color: #6c757d;
+    
+}
+
+.card .text-decoration-none {
+    text-decoration: none;
+}
+
+.card .text-decoration-none:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    
+}
+
+.table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.card-header {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.row {
+    margin-top: 20px;
+}
+.titleTable{
+    display: flex;
+    .titles{
+        color:#3b82f6;
+    }
+}

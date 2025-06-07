@@ -13,7 +13,8 @@ exports.getAllTables = async (req, res, next) => {
 exports.createTable = async (req, res) => {
   try {
     let { position, status, name } = req.body;
-    const result = await tableServices.createTable(position, status, name);
+    let image = req.file ? `${req.file.filename}` : null;
+    const result = await tableServices.createTable(position, status, name,image);
 
     res.status(200).json({ success: true, data: result });
   } catch (error) {
@@ -40,7 +41,8 @@ exports.updateTable = async (req, res, next) => {
     if (!existingTable) {
       return res.status(404).json({ error: "Table not found" });
     }
-    const result = await tableServices.updateTable(id, position, status, name);
+    let image = req.file ? `${req.file.filename}` : existingCategory.image;
+    const result = await tableServices.updateTable(id, position, status, name,image);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });

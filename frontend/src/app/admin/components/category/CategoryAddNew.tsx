@@ -23,7 +23,10 @@ import { TCreateCategoryParams } from "../../types";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên danh mục không được bỏ trống")
+    .min(6, "Tên danh mục phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
   image: z.string().optional(),
@@ -70,7 +73,7 @@ function CategoryAddNew() {
         return;
       }
       toast.success("Tạo danh mục thành công");
-      router.push("/admin/manage/category/new");
+      router.push("/admin/manage/category");
     } catch (error) {
       console.error(error);
       toast.error("Lỗi khi tạo danh mục");
@@ -152,7 +155,7 @@ function CategoryAddNew() {
                       }}
                     />
                     {previewImage && (
-                      <Image
+                      <img
                         src={previewImage}
                         alt="Ảnh danh mục"
                         width={250}

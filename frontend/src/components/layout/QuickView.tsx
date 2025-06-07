@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import styles from "../../styles/QuickView.module.css";
 import useCart from "../../app/hooks/useCart";
 
@@ -29,7 +28,7 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
   const initialVariant = product?.variants.length > 0 ? product.variants[0] : null;
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(initialVariant);
   const [quantity, setQuantity] = useState<number>(1);
-
+  const [note, setNote] = useState<string>("");
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
 
@@ -39,7 +38,7 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
     event.preventDefault();
     if (!product || !selectedVariant) return;
   
-    handleAddToCart(product, selectedVariant, quantity);
+    handleAddToCart(product, selectedVariant, quantity , note);
   };
   
   const handleClose = () => {
@@ -54,8 +53,8 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
       <button className={styles.closeButton} onClick={handleClose}>✖</button>
 
         <div className={styles.content}>
-          <Image
-            src={`http://localhost:3001/images/${selectedVariant.image}`}
+          <img
+            src={`${process.env.NEXT_PUBLIC_URL_IMAGE}/images/${selectedVariant.image}`}
             alt={product.name}
             width={400}
             height={400}
@@ -63,13 +62,17 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
           <div className={styles.form}>
             <div className={styles.detailProduct2}>
               <h1 className={styles.titleProduct}>{product.name}</h1>
-              <div className={styles.price}>
-                <p>
-                  {selectedVariant.sale_price > 0
-                    ? selectedVariant.sale_price
-                    : selectedVariant.price.toLocaleString()}{" "}đ
-                </p>
-              </div>
+              <div className={styles.price_container}>
+                  <span className={styles.price}>{selectedVariant.price.toLocaleString()}{" "}đ</span> 
+                  {selectedVariant.sale_price > 0 && (
+                    <>
+                      <s className={styles.oldPrice}>{selectedVariant.sale_price.toLocaleString()}{" "}đ</s>
+                      <div className={styles.savePrice}>
+                        Tiết kiệm: <span className={styles.savePriceValue}>{(selectedVariant.sale_price - selectedVariant.price).toLocaleString()}đ</span>
+                      </div>
+                    </>
+                  )}
+                  </div>
 
               {/* Chọn kích thước */}
               {product.variants.some((v) => v.option.trim() !== "") && (
@@ -100,8 +103,18 @@ const QuickView: React.FC<QuickViewProps> = ({ product, onClose }) => {
                   </div>
                 </div>
               )}
-              <label className={styles.labelNote}>Ghi chú</label>
-              <input type="text" placeholder="Ghi chú món ăn" className={styles.inputNote} />
+              <div className={styles.note}>
+                <label htmlFor="" className={styles.labelNote}>
+                  Ghi chú
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ghi chú món ăn"
+                  className={styles.inputNote}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
 
               <div className={styles.quantity}>
                 <label>Số lượng</label>
