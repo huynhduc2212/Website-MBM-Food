@@ -116,10 +116,8 @@ const CheckoutPage = () => {
   };
   // xử lý địa chỉ khi người dùng chưa có 
   const hasSavedAddress = user?.address && user.address.length > 0;
-  const addressData = hasSavedAddress
-    ? user.address[0]
-    : userInfo;
-
+  const isUsingNewAddress = userInfo.address.trim() !== "";
+  const addressData = isUsingNewAddress ? userInfo : (hasSavedAddress ? user.address[0] : userInfo);
   const fullAddress = `${addressData.address}, ${addressData.ward}, ${addressData.district}, ${addressData.city}`;
   const finalAddress = hasSavedAddress ? user.address[0] : userInfo;
   
@@ -397,13 +395,30 @@ const CheckoutPage = () => {
           <div className={styles.formInput}>
             <strong className="font-bold mb-2">Email : </strong><span>{user?.email}</span>
           </div>
+          
           {/* Nếu có địa chỉ thì hiện địa chỉ đó, còn không thì hiện form nhập */}
           {hasSavedAddress ? (
             <div className="p-4 border rounded mb-4">
               <h4 className="font-bold mb-2">Địa chỉ giao hàng</h4>
               <p><strong>Họ tên:</strong> {user.address[0].name}</p>
               <p><strong>Số điện thoại:</strong> {user.address[0].phone}</p>
-              <p><strong>Địa chỉ:</strong> {`${user.address[0].address}, ${user.address[0].ward}, ${user.address[0].district}, ${user.address[0].city}`}</p>
+              {/* Kiểm tra xem người dùng có nhập địa chỉ mới hay không */}
+              <p><strong>Địa chỉ:</strong> 
+                {isUsingNewAddress
+                  ? `${userInfo.address}, Thành phố Hồ Chí Minh`
+                  : `${addressData.address}, ${addressData.ward}, ${addressData.district}, ${addressData.city}`}
+              </p>
+
+              <label htmlFor="address" className={styles.formLabel}>
+                Địa chỉ nhận mới:
+              </label>
+              <input
+                type="text"
+                id="address"
+                className={styles.formInput}
+                value={userInfo.address}
+                onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
+              />
             </div>
           ) : (
             <div className="space-y-4">

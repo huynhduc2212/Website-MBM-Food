@@ -7,14 +7,14 @@ const productSchema = new Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, unique: true },
-    idcate: { type: ObjectId, ref: "category" },
+    idcate: { type: ObjectId, ref: "category", required: true },
     description: { type: String },
     variants: [
       {
         option: { type: String },
         price: { type: Number, required: true },
         sale_price: { type: Number, default: 0 },
-        image: { type: String, required: true },
+        image: { type: String},
       },
     ],
     hot: { type: Number, default: 0 },

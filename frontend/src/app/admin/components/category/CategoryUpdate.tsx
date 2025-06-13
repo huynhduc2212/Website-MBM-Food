@@ -58,11 +58,18 @@ function CategoryUpdate() {
       try {
         const res = await CategoryServices.getCategoryBySlug(slug);
         if (res?.data) {
-          form.reset(res.data);
+          form.reset({
+            name: res.data.name,
+            description: res.data.description || "",
+            slug: res.data.slug || "",
+            image: res.data.image ?? "",
+          });
           setPreviewImage(
-            res.data.image.startsWith("http")
-              ? res.data.image
-              : `${API_URL}/images/${res.data.image}`
+            res.data.image
+              ? res.data.image.startsWith("http")
+                ? res.data.image
+                : `${API_URL}/images/${res.data.image}`
+              : null
           );
           setCategoryId(res.data._id);
         } else {
@@ -110,7 +117,6 @@ function CategoryUpdate() {
         values.slug || slugify(values.name, { lower: true, locale: "vi" })
       );
 
-      // Xử lý ảnh đơn giản như file add new
       if (file) {
         formData.append("image", file);
       } else if (values.image) {

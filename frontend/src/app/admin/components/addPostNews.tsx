@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import newsService from "../services/NewsService";
 import slugify from "slugify";
-
+import { toast } from "react-toastify";
 // Dynamic import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false }) as unknown as React.FC<{
   value: string;
@@ -79,7 +79,10 @@ export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!post.title || !post.content || !post.author) {
+      toast.error("❗ Vui lòng điền đầy đủ: Tác giả, Tiêu đề, và Nội dung.");
+      return;
+    }
     const formData = new FormData();
     formData.append("author", post.author);
     formData.append("title", post.title);
@@ -98,13 +101,13 @@ export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
       const res = await newsService.addNews(formData);
 
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      alert("Bài viết đã được đăng!");
+      toast.success("Bài viết đã được đăng!");
 
       if (onSuccess) await onSuccess();
       if (onClose) onClose();
     } catch (error) {
       console.error("Lỗi khi đăng bài:", error);
-      alert("Có lỗi xảy ra khi đăng bài.");
+      toast.error("Có lỗi xảy ra khi đăng bài.");
     }
   };
 

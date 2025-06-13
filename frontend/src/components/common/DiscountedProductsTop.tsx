@@ -14,9 +14,9 @@ import Image from "next/image";
               Chúng tôi thường xuyên cập nhật những chương trình khuyến mãi để
               quý khách có thể trải nghiệm tất cả món ăn của chúng tôi.
             </p>
-            <p className={styles.discountEndText}>
+            {/* <p className={styles.discountEndText}>
               Chương trình đã kết thúc, hẹn gặp lại trong thời gian sớm nhất!
-            </p>
+            </p> */}
           </div>
 
           {/* Bên phải: Banner */}

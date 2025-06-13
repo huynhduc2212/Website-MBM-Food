@@ -225,7 +225,7 @@ class OrderService {
     if (
         order.id_payment_method.toString() !== "67d8351376759d2abe579970" && // Không phải thanh toán tiền mặt (Cash)
         order.payment_status === "Completed" && // Thanh toán đã hoàn tất
-        order_status !== "Shipping" // Đảm bảo không ghi đè khi đã là "Shipping"
+        order_status === "Pending" // Đảm bảo không ghi đè khi đã là "Shipping"
     ) {
         updateData.order_status = "Shipping";
     }

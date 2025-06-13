@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import BookingServices from "@/services/Booking";
 import { TCreateRegisterParams } from "@/types/enum";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 
@@ -37,6 +37,7 @@ const Booking = () => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,6 +45,21 @@ const Booking = () => {
     bookingDate: "",
     bookingTime: "",
   });
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (gridRef.current && !gridRef.current.contains(event.target)) {
+        setHoveredIndex(null);
+        setPreviewImage(null);
+        setPreviewIndex(null);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -303,7 +319,7 @@ const Booking = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 justify-center mt-4">
+                <div ref={gridRef} className="grid grid-cols-3 gap-4 justify-center mt-4">
                   {dataTable.map((table, index) => {
                     const isReserved = table.status === "Reserved";
                     const isSelected = selectedTable === table._id;

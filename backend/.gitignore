@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env files
+
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Docker
+.dockerignore
+
+# Coverage
+coverage/
+
+# Vercel or similar platforms
+.vercel/
+
+# TypeScript (nếu có dùng)
+*.tsbuildinfo
+next-env.d.ts
+
+# Output folders (nếu bạn xuất ra)
+.out/

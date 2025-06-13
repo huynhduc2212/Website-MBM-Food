@@ -15,7 +15,8 @@ const {
     toggleActiveStatus,
     forgotPassword,
     resetPassword,
-    addAddressFromBooking
+    addAddressFromBooking,
+    deleteAddress
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -45,6 +46,7 @@ router.get('/', getAllUsers);
 // Tìm kiếm người dùng theo tên
 router.get('/search', findUserByName);
 
+router.delete('/:userId/address/:addressId', deleteAddress);
 
 // Cập nhật người dùng theo ID
 router.put('/:id', updateUser);

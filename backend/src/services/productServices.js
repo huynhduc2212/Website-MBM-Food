@@ -28,7 +28,7 @@ exports.getByIdProduct = async (id) => {
 
 exports.getByCategory = async (idcate, query) => {
   let limit = query.limit ? parseInt(query.limit) : 100;
-  let filter = { idcate: idcate };
+  let filter = { idcate: idcate, status: "Active" };
   if (query.minPrice || query.maxPrice) {
     let priceFilter = {};
     

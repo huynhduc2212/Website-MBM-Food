@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { addAddress, getUserById, updateAddress } from "@/services/user";
+import { addAddress, getUserById, updateAddress, deleteAddress } from "@/services/user";
 import styles from "@/styles/Address.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Edit3 } from "lucide-react";
+import { Edit3, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 export default function Address() {
     const [showModal, setShowModal] = useState(false);
     const [cities, setCities] = useState<City[]>([]);
@@ -15,7 +16,7 @@ export default function Address() {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [error, setError] = useState<string | null>(null);
-    
+
 
 
     const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ export default function Address() {
         name: string;
         wards: { code: string; name: string }[];
     }
-    
+
     interface City {
         code: string;
         name: string;
@@ -203,15 +204,15 @@ export default function Address() {
         });
         setShowUpdateModal(true);
     };
-    
+
     const handleUpdateAddress = async () => {
         const token = localStorage.getItem("token");
-    
+
         if (!selectedAddress || !selectedAddress._id || !user?._id || !token) {
             setMessage("Lỗi: Thiếu thông tin user, địa chỉ hoặc token.");
             return;
         }
-    
+
         try {
             await updateAddress(user._id, selectedAddress._id, formData, token);
             setMessage("Cập nhật địa chỉ thành công!");
@@ -221,7 +222,36 @@ export default function Address() {
             setMessage("Lỗi: " + error.message);
         }
     };
+    const handleDeleteAddress = async (addressId: string) => {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        if (!userId || !token) {
+            setMessage("Bạn chưa đăng nhập!");
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: "Xác nhận xóa",
+            text: "Bạn có chắc muốn xóa địa chỉ này?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy",
+        });
     
+        if (!result.isConfirmed) return;
+
+        try {
+            await deleteAddress(userId, addressId, token);
+            setMessage("Đã xóa địa chỉ thành công.");
+            window.location.reload();
+        } catch (error: any) {
+            setMessage("Lỗi: " + error.message);
+        }
+    };
 
 
     return (
@@ -237,13 +267,13 @@ export default function Address() {
 
                             {user.address && user.address.length > 0 ? (
                                 <div>
-                                   
+
 
                                     <h6 className="mt-3 mb-3">📌 Danh sách địa chỉ của bạn:</h6>
                                     <div className="row">
                                         {user.address.map((addr) => (
                                             <div key={addr._id} className="col-md-6">
-                                                 
+
                                                 <div className="card shadow-sm mb-3">
                                                     <div className="card-body" style={{
                                                         backgroundColor: "#e6f4ea",
@@ -251,10 +281,17 @@ export default function Address() {
                                                         borderRadius: "8px",
 
                                                     }}>
+                                                        <button
+                                                            className="btn btn-sm text-danger float-right"
+                                                            onClick={() => handleDeleteAddress(addr._id!)}
+                                                            title="Xóa địa chỉ"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
                                                         <button className="btn btn-sm float-right" onClick={() => handleEditAddress(addr)}>
                                                             <Edit3 size={14} />
                                                         </button>
-
+                                                        
                                                         <h6 className="card-title fw-bold">{addr.name}</h6>
                                                         <p className="card-text">
                                                             📞 <strong>{addr.phone}</strong> <br />

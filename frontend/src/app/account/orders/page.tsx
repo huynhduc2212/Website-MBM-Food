@@ -145,7 +145,7 @@ export default function AddressTable() {
                         <th>Khách hàng</th>
                         <th>Phương thức thanh toán</th>
                         <th onClick={() => requestSort("order_status")} style={{ cursor: "pointer" }}>Trạng thái 🔽</th>
-                        <th onClick={() => requestSort("total_amount")} style={{ cursor: "pointer" }}>Tổng tiền 🔽</th>
+                        <th onClick={() => requestSort("total_payment")} style={{ cursor: "pointer" }}>Tổng tiền 🔽</th>
                         <th>Chi tiết đơn hàng</th>
                         <th>Hủy đơn(only Pending)</th>
                     </tr>
@@ -171,7 +171,7 @@ export default function AddressTable() {
                                     {order.order_status}
                                 </span>
                             </td>
-                            <td>{order.total_amount?.toLocaleString("vi-VN")} VND</td>
+                            <td>{order.total_payment?.toLocaleString("vi-VN")} VND</td>
                             <td>
                                 {order.details.slice(0, expandedOrders === order._id ? order.details.length : 2).map((item: any, index: any) => (
                                     <div key={index} className="text-start">

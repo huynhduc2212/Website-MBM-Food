@@ -6,9 +6,8 @@ import styles from "../../styles/CartPage.module.css";
 import CartIcon from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 
-
 interface CartItem {
-  _id: string; 
+  _id: string;
   name: string;
   price: number;
   sale_price?: number;
@@ -26,18 +25,18 @@ const CartPage = () => {
     try {
       const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
       if (!Array.isArray(storedCart)) throw new Error("Invalid cart data");
-  
+
       const formattedCart = storedCart.map((item: any) => ({
-        _id: item._id || "", 
+        _id: item._id || "",
         name: item.name || "Sản phẩm không tên",
         price: item.price || 0,
         sale_price: item.sale_price || 0,
         quantity: item.quantity || 1,
         image: item.image || "default.jpg",
         variants: item.option ? item.option : undefined,
-        note:item.note || "Không có ghi chú"
+        note: item.note || "Không có ghi chú",
       }));
-  
+
       setCart(formattedCart);
     } catch (error) {
       console.error("Lỗi khi lấy giỏ hàng từ localStorage:", error);
@@ -49,7 +48,7 @@ const CartPage = () => {
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
     // 🔥 Phát sự kiện cập nhật
-    window.dispatchEvent(new Event("cartUpdated")); 
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const increaseQuantity = (_id: string, event: React.MouseEvent) => {
@@ -74,12 +73,18 @@ const CartPage = () => {
     const newCart = cart.filter((item) => item._id !== _id);
     updateCart(newCart);
     // 🔥 Phát sự kiện cập nhật
-    window.dispatchEvent(new Event("cartUpdated")); 
+    window.dispatchEvent(new Event("cartUpdated"));
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    localStorage.setItem("cart", JSON.stringify([]));
+    // 🔥 Phát sự kiện cập nhật
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const getTotalPrice = () => {
-    return cart.reduce(
-      (total, item) =>total + (item.price * item.quantity),0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const handleCheckout = () => {
@@ -133,11 +138,15 @@ const CartPage = () => {
                             <div className={styles.cartName}>
                               <a className={styles.ProductName}>{item.name}</a>
                               {item.variants && (
-                                <span className={styles.VariantTitle}>{item.variants}</span>
+                                <span className={styles.VariantTitle}>
+                                  {item.variants}
+                                </span>
                               )}
                               {item.note && (
                                 <div className={styles.note}>
-                                  <span className={styles.VariantTitle}>Ghi chú: {item.note}</span> 
+                                  <span className={styles.VariantTitle}>
+                                    Ghi chú: {item.note}
+                                  </span>
                                 </div>
                               )}
 
@@ -155,19 +164,27 @@ const CartPage = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className={`${styles.grid} ${styles.gridQuantity}`}>
+                            <div
+                              className={`${styles.grid} ${styles.gridQuantity}`}
+                            >
                               <div className={styles.cartSelect}>
                                 <div className={styles.qtyBtnCart}>
                                   <button
                                     className={styles.qtybtn}
-                                    onClick={(e) => decreaseQuantity(item._id, e)}
+                                    onClick={(e) =>
+                                      decreaseQuantity(item._id, e)
+                                    }
                                   >
                                     -
                                   </button>
-                                  <span className={styles.textQty}>{item.quantity}</span>
+                                  <span className={styles.textQty}>
+                                    {item.quantity}
+                                  </span>
                                   <button
                                     className={styles.qtybtn}
-                                    onClick={(e) => increaseQuantity(item._id, e)}
+                                    onClick={(e) =>
+                                      increaseQuantity(item._id, e)
+                                    }
                                   >
                                     +
                                   </button>
@@ -177,7 +194,10 @@ const CartPage = () => {
                             <div className={styles.grid}>
                               <div className={styles.cartPrice}>
                                 <span className={styles.price}>
-                                  {(item.price * item.quantity).toLocaleString()} đ
+                                  {(
+                                    item.price * item.quantity
+                                  ).toLocaleString()}{" "}
+                                  đ
                                 </span>
                               </div>
                             </div>
@@ -186,6 +206,10 @@ const CartPage = () => {
                       </div>
                     </div>
                   ))}
+
+                  <button className={styles.clearCartBtn} onClick={clearCart}>
+                    Xóa tất cả
+                  </button>
 
                   <div className={styles.cartFooter}>
                     <div className={styles.offSet}>
@@ -200,7 +224,7 @@ const CartPage = () => {
                         </div>
                       </div>
                       <div className={styles.checkOut}>
-                        <button 
+                        <button
                           className={styles.cartBtnCheckOut}
                           onClick={handleCheckout}
                         >
@@ -222,6 +246,6 @@ const CartPage = () => {
       </section>
     </div>
   );
-}
+};
 
 export default CartPage;

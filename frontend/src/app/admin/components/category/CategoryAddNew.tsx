@@ -63,6 +63,7 @@ function CategoryAddNew() {
       formData.append("name", categoryData.name);
       formData.append("description", categoryData.description);
       formData.append("slug", categoryData.slug);
+
       if (file) {
         formData.append("image", file);
       }

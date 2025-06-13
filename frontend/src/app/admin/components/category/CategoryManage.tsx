@@ -185,7 +185,7 @@ const CategoryManage = () => {
                       </TableCell>
                       <TableCell className="">
                         <div className="flex items-center gap-20">
-                          <p className="line-clamp-1">{category.description}</p>
+                          <p className="line-clamp-1">{category.description || "Không có mô tả"}</p>
                         </div>
                       </TableCell>
                       <TableCell className="pl-2">

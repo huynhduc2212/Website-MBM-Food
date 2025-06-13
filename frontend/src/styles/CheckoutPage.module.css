@@ -26,6 +26,7 @@
   font-weight: bold;
   display: block;
   margin-top: 15px;
+  margin-bottom: 8px;
   padding-right: 10px;
 }
 
@@ -36,6 +37,20 @@
   margin-top: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin-bottom: 16px;
+}
+
+.formSelect {
+  border: 1px solid #d1d5db; 
+  outline: none;
+  box-shadow: none; 
+  padding: 8px 12px; 
+  width: 400px;
+  border-radius: 0.25rem; 
+  background-color: #ffffff;
+}
+
+.formSelect:last-child {
   margin-bottom: 16px;
 }
 

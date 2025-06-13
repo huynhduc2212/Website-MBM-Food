@@ -58,7 +58,7 @@ const ProductListCate = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const [totalPages, setTotalPages] = useState(1);
-  
+
   useEffect(() => {
     setToken(localStorage.getItem("token"));
   }, []);
@@ -75,9 +75,8 @@ const ProductListCate = ({
           queryParams.append("maxPrice", String(maxPrice));
         if (selectedSize !== undefined && selectedSize !== null)
           queryParams.append("size", selectedSize);
-        if (sortOption !== undefined)
-          queryParams.append("sort", sortOption);
-          
+        if (sortOption !== undefined) queryParams.append("sort", sortOption);
+
         if (queryParams.toString()) url += `?${queryParams.toString()}`;
 
         const res = await fetch(url);
@@ -141,7 +140,7 @@ const ProductListCate = ({
             );
             break;
         }
-       
+
         // ⭐ Kiểm tra nếu không có sản phẩm
         if (filteredProducts.length === 0) {
           setProducts([]);
@@ -183,7 +182,15 @@ const ProductListCate = ({
       }
     };
     fetchProducts();
-  }, [token, idcate, minPrice, maxPrice, selectedSize, sortOption, currentPage]);
+  }, [
+    token,
+    idcate,
+    minPrice,
+    maxPrice,
+    selectedSize,
+    sortOption,
+    currentPage,
+  ]);
 
   const toggleFavorite = async (id: string) => {
     if (!token) {
@@ -206,25 +213,24 @@ const ProductListCate = ({
     }
   };
 
-  const API_URL =  process.env.NEXT_PUBLIC_URL_IMAGE;
-  
- if (products.length === 0) {
-  return (
-    <div
-      style={{
-        padding: "15px",
-        margin: "20px 0",
-        color: "#856404",
-        backgroundColor: "#fff3cd",
-        border: "1px solid #ffeeba",
-        borderRadius: "4px",
-      }}
-    >
-      Không có sản phẩm nào trong danh mục này.
-    </div>
-  );
-}
+  const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
+  if (products.length === 0) {
+    return (
+      <div
+        style={{
+          padding: "15px",
+          margin: "20px 0",
+          color: "#856404",
+          backgroundColor: "#fff3cd",
+          border: "1px solid #ffeeba",
+          borderRadius: "4px",
+        }}
+      >
+        Không có sản phẩm nào trong danh mục này.
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -270,8 +276,19 @@ const ProductListCate = ({
                   </div>
                   <div className={styles.groupForm}>
                     <div className={styles.priceBox}>
-                      <span>Giá: </span>{" "}
-                      {item.matchedVariant.price.toLocaleString()}₫
+                      <span className={styles.titlePrice}>Giá: </span>
+                      <div className="flex flex-col">
+                        <span className={styles.price}>
+                          {item.matchedVariant.price.toLocaleString()}₫
+                        </span>
+                        {item.matchedVariant.sale_price > 0 ? (
+                          <span className={styles.salePrice}>
+                            {item.matchedVariant.sale_price.toLocaleString()}đ
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     </div>
                     <button
                       className={styles.add}
@@ -282,13 +299,27 @@ const ProductListCate = ({
                   </div>
                 </div>
               </div>
+              {item.matchedVariant.sale_price > 0 && (
+                <span className={styles.bestSellingNewTag}>
+                  <span>
+                    -
+                    {Math.round(
+                      100 -
+                        (item.matchedVariant.price /
+                          item.matchedVariant.sale_price) *
+                          100
+                    )}
+                    %
+                  </span>
+                </span>
+              )}
             </div>
           ))}
         </div>
       </section>
 
-         {/* ⭐ PHÂN TRANG */}
-         {!showAll && totalPages > 1 && (
+      {/* ⭐ PHÂN TRANG */}
+      {!showAll && totalPages > 1 && (
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           {Array.from({ length: totalPages }, (_, i) => (
             <button

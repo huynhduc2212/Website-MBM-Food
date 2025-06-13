@@ -281,7 +281,7 @@ export default function Dashboard() {
                                             <td>{order.order_code}</td>
                                             <td>{order.name}</td>
                                             <td>{order.details?.map(d => d.name).join(', ') || 'N/A'}</td>
-                                            <td>{order.total_amount.toLocaleString()} VND</td>
+                                            <td>{order.total_payment.toLocaleString()} VND</td>
                                             <td>{order.order_status}</td>
                                         </tr>
                                     ))}

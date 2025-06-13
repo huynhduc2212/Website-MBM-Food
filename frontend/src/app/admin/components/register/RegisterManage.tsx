@@ -132,7 +132,6 @@ const RegisterManage = () => {
     try {
       await RegisterServices.updateRegisterStatus(
         selectedRegister._id,
-        "Cancelled",
         cancelReason
       );
 

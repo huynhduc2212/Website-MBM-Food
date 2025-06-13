@@ -167,10 +167,12 @@
 .selectOption {
   display: flex;
   flex-wrap: wrap;
+  column-gap: 12px;
 }
 .selectOptionElement {
-  display: inline-block;
-  margin: 0px 5px 5px 0;
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
 }
 .valueRoperties {
   color: #006a31;
@@ -254,23 +256,7 @@
   margin-top: 10px;
   display: flex;
 }
-.add {
-  border: 0;
-  height: 50px;
-  padding: 0 0px;
-  color: #fff;
-  text-transform: uppercase;
-  width: 100%;
-  font-weight: 500;
-  border-radius: 5px;
-  overflow: hidden;
-  background: #e31837;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  transition: all 0.3s ease;
-}
+
 .heart {
   min-width: 50px;
   height: 50px;
@@ -518,10 +504,9 @@
   background: #006a31;
   border: 0;
   border-radius: 5px;
-  padding: 2px 2px;
+  padding: 5px 10px;
   font-size: 16px;
   font-weight: 700;
-  width: 120px;
   color: #fff;
 }
 .relatedSection{

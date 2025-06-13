@@ -13,19 +13,14 @@ const getAllRegisters = async () => {
   }
 };
 
-const updateRegisterStatus = async (
-  id: string,
-  status: string,
-  note: string
-) => {
+const updateRegisterStatus = async (id: string, cancel_reason: string) => {
   const response = await fetch(`${API_URL}/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      status,
-      note,
+      cancel_reason,
     }),
   });
 

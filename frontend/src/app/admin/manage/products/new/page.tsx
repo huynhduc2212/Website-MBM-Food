@@ -5,7 +5,7 @@ import React from "react";
 const page = () => {
   return (
     <div>
-      <Heading>Thêm sản phẩm</Heading>
+      <Heading className="mt-3">Thêm sản phẩm</Heading>
       <ProductAdddNew></ProductAdddNew>
     </div>
   );

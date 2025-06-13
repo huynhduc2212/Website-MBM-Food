@@ -14,7 +14,7 @@ export default function AdminLayout({
       <SidebarAdmin />
       <div className={styles.content}>
         {/* <Header /> */}
-        <main className="mb-4">{children}</main>
+        <main className="mb-4 ">{children}</main>
       </div>
     </div>
   );

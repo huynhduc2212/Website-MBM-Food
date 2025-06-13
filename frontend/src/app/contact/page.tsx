@@ -112,7 +112,7 @@ export default function Contact() {
               />
               <div>
                 <h3 className={styles.infoTitle}>Email</h3>
-                <p>support@mbm.vn</p>
+                <p>mbmfoodstore@gmail.com</p>
               </div>
             </div>
           </div>

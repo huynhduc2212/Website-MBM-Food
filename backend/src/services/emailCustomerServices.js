@@ -37,15 +37,6 @@ const sendEmail = async ({ name, email, phone, message }) => {
                                     <strong>Nội dung:</strong> ${message}
                                 </p>
                                 <p>Chúng tôi sẽ phản hồi bạn trong thời gian sớm nhất.</p>
-                                
-                                <!-- Button -->
-                                <div style="text-align: center; margin: 20px 0;">
-                                    <a href="https://mbmfoodstore.com/contact" 
-                                       style="background: #006a31; color: white; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-weight: bold;">
-                                        Liên hệ ngay
-                                    </a>
-                                </div>
-        
                                 <p>Trân trọng,</p>
                                 <p><strong>Đội ngũ hỗ trợ MBM</strong></p>
                             </td>
@@ -55,7 +46,6 @@ const sendEmail = async ({ name, email, phone, message }) => {
                         <tr>
                             <td align="center" style="padding: 15px; font-size: 12px; color: #777;">
                                 <p>&copy; 2024 MBM. Mọi quyền được bảo lưu.</p>
-                                <p><a href="/" style="color: #006a31; text-decoration: none;">Trang chủ</a> | <a href="/" style="color: #006a31; text-decoration: none;">Hỗ trợ</a></p>
                             </td>
                         </tr>
                     </table>

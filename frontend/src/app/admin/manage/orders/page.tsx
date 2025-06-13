@@ -16,6 +16,7 @@ interface Order {
   id_payment_method: { _id: string };
   details: { _id: string; id_product: { name: string }; quantity: number; price: number }[];
   total_amount: number;
+  total_payment: number;
 }
 
 const STATUS_FLOW: Record<Order["order_status"], Order["order_status"][]> = {
@@ -91,11 +92,11 @@ const OrderManagementPage = () => {
     try {
       const order = orders.find((o) => o._id === orderId);
       if (!order) return;
-  
+
       // Nếu đơn hàng có MoMo và chưa thanh toán, tự động hủy đơn hàng
       if (
-        order.order_status === "Pending" && 
-        order.payment_status !== "Completed" && 
+        order.order_status === "Pending" &&
+        order.payment_status !== "Completed" &&
         order.id_payment_method._id !== "67d8351376759d2abe579970" // MoMo (không phải COD)
       ) {
         newStatus = "Canceled";
@@ -106,25 +107,25 @@ const OrderManagementPage = () => {
         console.error("Lỗi khi cập nhật trạng thái đơn hàng!");
         return;
       }
-  
+
       setOrders((prevOrders) =>
         prevOrders.map((order) => {
           if (order._id !== orderId) return order;
-  
+
           // Nếu thanh toán MOMO và đã thanh toán, tự động chuyển sang "Shipping"
           if (
-            order.order_status === "Pending" && 
-            order.payment_status === "Completed" && 
+            order.order_status === "Pending" &&
+            order.payment_status === "Completed" &&
             order.id_payment_method._id !== "67d8351376759d2abe579970" // Không phải COD
           ) {
             updateOrderStatus(order._id, "Shipping");
           }
-  
+
           // Nếu đơn hàng chuyển sang "Delivered" và thanh toán COD, cập nhật trạng thái thanh toán
           if (newStatus === "Delivered" && order.id_payment_method._id === "67d8351376759d2abe579970") {
             return { ...order, order_status: "Delivered", payment_status: "Completed" };
           }
-  
+
           return { ...order, order_status: newStatus };
         })
       );
@@ -132,7 +133,7 @@ const OrderManagementPage = () => {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
-  
+
   // Kiểm tra và cập nhật tự động khi điều kiện phù hợp
   useEffect(() => {
     orders.forEach((order) => {
@@ -151,8 +152,8 @@ const OrderManagementPage = () => {
       }
     });
   }, [orders]); // Chạy khi danh sách đơn hàng thay đổi
-  
-  
+
+
 
 
   const handleStatusChange = async (orderId: string, currentStatus: Order["order_status"]) => {
@@ -185,7 +186,7 @@ const OrderManagementPage = () => {
 
 
   return (
-    <div className={`${styles.tableContainer} mt-4` } >
+    <div className={`${styles.tableContainer} mt-4`} >
       <h4 className="fw-bold fs-3 mb-3">Danh sách đơn hàng</h4>
 
       {/* Ô tìm kiếm và lọc trạng thái */}
@@ -235,9 +236,10 @@ const OrderManagementPage = () => {
             paginatedOrders.map((order) => (
               <tr key={order._id} className={styles.row}>
                 <td>
-                  <a href={`https://mbmfood.store/admin/manage/custumerList/${order.id_user._id}`}>
+                  <a href={`https://mbmfood.store/admin/manage/custumerList/${order.id_user?._id || ""}`}>
                     #{order.order_code}
                   </a>
+
                 </td>
                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td>
@@ -247,7 +249,7 @@ const OrderManagementPage = () => {
                     </div>
                   ))}
                 </td>
-                <td>{order.total_amount.toLocaleString("vi-VN")} VND</td>
+                <td>{order.total_payment.toLocaleString("vi-VN")} VND</td>
                 <td className="text-center">
                   <button
                     className={`${styles.statusBtn} ${styles[order.order_status]}`}
@@ -279,7 +281,7 @@ const OrderManagementPage = () => {
       </table>
 
 
-      
+
       {/* Phân trang */}
       {totalPages > 1 && (
         <div className="d-flex justify-content-center mt-3">

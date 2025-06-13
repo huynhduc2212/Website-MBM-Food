@@ -20,7 +20,10 @@ import { Input } from "@/components/ui/input";
 import { TCreateTableParams } from "../../types";
 
 const formSchema = z.object({
-  name: z.string().nonempty("Tên bàn không được bỏ trống").min(3, "Tên bàn phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên bàn không được bỏ trống")
+    .min(3, "Tên bàn phải có ít nhất 3 ký tự"),
   position: z.string().optional(),
   image: z.string().optional(),
 });

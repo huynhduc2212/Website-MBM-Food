@@ -215,7 +215,7 @@ export default function EditPost({ id, onClose, onSuccess }: EditPostProps) {
         <input
           type="file"
           accept="image/*"
-          name="variants[0][image]"
+          name="imageSummary"
           className="mb-2"
         />
 

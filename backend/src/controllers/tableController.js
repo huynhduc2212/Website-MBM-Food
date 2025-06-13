@@ -36,13 +36,13 @@ exports.getByIdTable = async (req, res, next) => {
 exports.updateTable = async (req, res, next) => {
   try {
     let { id } = req.params;
-    let { position, status, name } = req.body;
+    let { position, name } = req.body;
     const existingTable = await tableServices.getByIdTable(id);
     if (!existingTable) {
       return res.status(404).json({ error: "Table not found" });
     }
-    let image = req.file ? `${req.file.filename}` : existingCategory.image;
-    const result = await tableServices.updateTable(id, position, status, name,image);
+    let image = req.file ? `${req.file.filename}` : existingTable.image;
+    const result = await tableServices.updateTable(id, position, name,image);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(404).json({ error: error.message });

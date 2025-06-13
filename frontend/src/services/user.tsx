@@ -158,3 +158,18 @@ export const updateAddress = async (
 export const getUserById = async (userId: string) => {
   return fetchAPI(`${API_URL}/${userId}`, {});
 };
+export const deleteAddress = async (
+  userId: string,
+  addressId: string,
+  token: string
+) => {
+  return fetchAPI(
+    `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/user/${userId}/address/${addressId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

@@ -21,7 +21,10 @@ import { Input } from "@/components/ui/input";
 const API_URL = process.env.NEXT_PUBLIC_URL_IMAGE;
 
 const formSchema = z.object({
-  name: z.string().nonempty("Tên bàn không được bỏ trống").min(3, "Tên bàn phải có ít nhất 3 ký tự"),
+  name: z
+    .string()
+    .nonempty("Tên bàn không được bỏ trống")
+    .min(3, "Tên bàn phải có ít nhất 3 ký tự"),
   position: z.string().optional(),
   image: z.string().optional(),
 });
@@ -50,26 +53,26 @@ function TableUpdate() {
 
       try {
         const res = await TableServices.getTableById(id);
-
-        if (!res?.data) {
-          toast.error(res?.message || "Không thể tải thông tin bàn");
-          return;
+        if (res?.data) {
+          form.reset({
+            name: res.data.name,
+            position: res.data.position || "",
+            image: res.data.image ?? "",
+          });
+          setPreviewImage(
+            res.data.image
+              ? res.data.image.startsWith("http")
+                ? res.data.image
+                : `${API_URL}/images/${res.data.image}`
+              : null
+          );
+          setTableId(res.data._id);
+        } else {
+          toast.error("Không tìm thấy banner");
+          router.push("/admin/manage/banner");
         }
-
-        form.reset({
-          name: res.data.name,
-          position: res.data.position,
-        });
-        setPreviewImage(
-          res.data.image.startsWith("http")
-            ? res.data.image
-            : `${API_URL}/images/${res.data.image}`
-        );
-        setTableId(res.data._id);
       } catch (error) {
-        console.error(error);
         toast.error("Lỗi khi tải thông tin bàn");
-        router.push("/admin/manage/table");
       }
     }
     fetchTableDetails();
@@ -78,26 +81,25 @@ function TableUpdate() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const tableData: TCreateTableParams = {
-        name: values.name,
-        position: values.position || "",
-        image: file ? URL.createObjectURL(file) : "",
-      };
-
-      const formData = new FormData();
-      formData.append("name", tableData.name);
-      formData.append("position", tableData.position);
-      if (file) {
-        formData.append("image", file);
-      }
-
       if (!tableId) {
         toast.error("Không tìm thấy bàn");
         return;
       }
+
+      const formData = new FormData();
+      formData.append("name", values.name);
+      if (values.position) {
+        formData.append("position", values.position);
+      }
+      if (file) {
+        formData.append("image", file);
+      } else if (values.image) {
+        formData.append("image", values.image);
+      }
+
       const res = await TableServices.updateTable(tableId, formData);
 
-      if (!res?.success) {
+      if (!res) {
         toast.error(res?.message || "Có lỗi xảy ra");
         return;
       }

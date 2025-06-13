@@ -5,7 +5,7 @@ import React from "react";
 const page = () => {
   return (
     <div>
-      <Heading>Tạo danh mục mới</Heading>
+      <Heading className="mt-3">Tạo danh mục mới</Heading>
       <CategoryAddNew></CategoryAddNew>
     </div>
   );

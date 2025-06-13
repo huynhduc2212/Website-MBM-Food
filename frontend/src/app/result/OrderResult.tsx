@@ -80,7 +80,6 @@ const OrderResult = () => {
           // ✅ Nếu thanh toán thành công, cập nhật lại state
           if (updatedOrder.payment_status === "Completed" || momoSuccess) {
             updatedOrder.payment_status = "Completed";
-            await sendConfirmationEmail(updatedOrder);
           }
 
           // 🛒 Xóa giỏ hàng
@@ -173,49 +172,7 @@ const OrderResult = () => {
   };
   
 
-  // 📧 Gửi email xác nhận đơn hàng
-  const sendConfirmationEmail = async (orderData: Order) => {
-    if (
-      !orderData.id_user?.email ||
-      !orderData.details ||
-      orderData.details.length === 0
-    ) {
-      console.error("❌ Lỗi: Thiếu email hoặc dữ liệu đơn hàng!", orderData);
-      return;
-    }
-
-    try {
-      console.log("📩 Đang gửi email với dữ liệu:", {
-        email: orderData.id_user.email,
-        orderDetails: orderData.details.map((item) => ({
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-      });
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_IMAGE}/api/email/send`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: orderData.id_user.email,
-            orderDetails: orderData.details.map((item) => ({
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-            })),
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("📩 Kết quả gửi email:", data);
-    } catch (error) {
-      console.error("❌ Lỗi gửi email xác nhận:", error);
-    }
-  };
+  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -243,12 +200,6 @@ const OrderResult = () => {
         <div className="mt-6 text-center">
           <div className="text-green-600 text-5xl">✔</div>
           <h2 className="text-xl font-semibold mt-3">Cảm ơn bạn đã đặt hàng</h2>
-          {order.id_user.email && order.payment_status === "Completed" && (
-            <p className="text-gray-600 text-sm">
-              Một email xác nhận đã được gửi tới <b>{order.id_user.email}</b>.
-              Xin vui lòng kiểm tra email của bạn.
-            </p>
-          )}
         </div>
 
         <div className="mt-6 flex justify-between border p-4 rounded-lg">
@@ -294,9 +245,35 @@ const OrderResult = () => {
           </p>
         </div>
 
+        {/* Thông tin đơn hàng */}
+        <div className="mt-6 border p-4 rounded-lg">
+          <span className="font-semibold mb-2">Mã đơn : </span><span>{order.order_code}</span>
+          {order.details.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center border-b py-2"
+            >
+              <div>
+                <p className="font-semibold">{item.id_product.name}</p>
+                <p className="text-sm text-gray-500">
+                  Số lượng: {item.quantity}
+                </p>
+              </div>
+              <p className="font-semibold">{item.price.toLocaleString()}đ</p>
+            </div>
+          ))}
+
+          <div className="flex justify-between font-semibold mt-3">
+            <p>TỔNG TIỀN THANH TOÁN</p>
+            <p className="text-blue-600">
+              {order.total_payment.toLocaleString()}đ
+            </p>
+          </div>
+        </div>
+
         <div className="mt-6 text-center">
           <Link href="/">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-[#016a31] text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Tiếp tục mua hàng
             </button>
           </Link>

@@ -38,12 +38,15 @@ const Login = () => {
       });
 
       const result = await res.json();
+      console.log("Kết quả từ backend:", result);
       if (!res.ok) throw new Error(result.message || "Đăng nhập thất bại");
-
+      if (!result.isActive) {
+        throw new Error("Tài khoản đã bị vô hiệu hóa!");
+      }
       if (!result.token || !result.userId || !result.role) {
         throw new Error("Dữ liệu từ server không hợp lệ.");
       }
-
+      
       // Lưu token vào localStorage
       localStorage.setItem("token", result.token);
       localStorage.setItem("userId", result.userId);

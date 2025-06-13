@@ -17,12 +17,11 @@ exports.getByIdTable = async (id) => {
   return table;
 };
 
-exports.updateTable = async (id, position, status, name,image) => {
+exports.updateTable = async (id, position, name, image) => {
   const table = await tableModel.findByIdAndUpdate(id, {
     position,
-    status,
     name,
-    image
+    image,
   });
   return table;
 };
@@ -35,25 +34,29 @@ exports.updateTable = async (id, position, status, name,image) => {
 // };
 
 exports.updateTableStatus = async (id, status) => {
-  const table = await tableModel.findByIdAndUpdate(id, {
-    status,
-  }, { new: true });
-  
+  const table = await tableModel.findByIdAndUpdate(
+    id,
+    {
+      status,
+    },
+    { new: true }
+  );
+
   // Nếu trạng thái thay đổi thành Available, cập nhật đơn đăng ký tương ứng
   if (status === "Available") {
     // Tìm đơn đăng ký đang hoạt động cho bàn này
     const activeRegister = await Register.findOne({
       id_table: id,
-      status: "Confirmed"
+      status: "Confirmed",
     });
-    
+
     // Nếu có đơn đăng ký đang hoạt động, cập nhật thành Completed
     if (activeRegister) {
       activeRegister.status = "Completed";
       await activeRegister.save();
     }
   }
-  
+
   return table;
 };
 

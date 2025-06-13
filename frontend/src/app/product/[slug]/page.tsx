@@ -150,7 +150,7 @@ const ProductDetail = () => {
     };
 
     fetchProducts();
-  }, [token,]);
+  }, [token]);
 
   // useEffect lấy sản phẩm liên quan
   useEffect(() => {
@@ -207,7 +207,8 @@ const ProductDetail = () => {
   }, []);
   const copyToClipboard = (code: string) => {
     navigator.clipboard.writeText(code);
-    alert(`Đã sao chép mã: ${code}`);
+    // alert(`Đã sao chép mã: ${code}`);
+    toast.success(`Đã sao chép mã: ${code}`);
   };
   const increaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -310,15 +311,25 @@ const ProductDetail = () => {
                 </div>
                 <form action="#" className={styles.form}>
                   <div className={styles.price_container}>
-                  <span className={styles.price}>{selectedVariant.price.toLocaleString()}{" "}đ</span> 
-                  {selectedVariant.sale_price > 0 && (
-                    <>
-                      <s className={styles.oldPrice}>{selectedVariant.sale_price.toLocaleString()}{" "}đ</s>
-                      <div className={styles.savePrice}>
-                        Tiết kiệm: <span className={styles.savePriceValue}>{(selectedVariant.sale_price - selectedVariant.price).toLocaleString()}đ</span>
-                      </div>
-                    </>
-                  )}
+                    <span className={styles.price}>
+                      {selectedVariant.price.toLocaleString()} đ
+                    </span>
+                    {selectedVariant.sale_price > 0 && (
+                      <>
+                        <s className={styles.oldPrice}>
+                          {selectedVariant.sale_price.toLocaleString()} đ
+                        </s>
+                        <div className={styles.savePrice}>
+                          Tiết kiệm:{" "}
+                          <span className={styles.savePriceValue}>
+                            {(
+                              selectedVariant.sale_price - selectedVariant.price
+                            ).toLocaleString()}
+                            đ
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className={styles.formProduct}>
                     <div className={styles.select}>
@@ -486,7 +497,10 @@ const ProductDetail = () => {
                                     __html: item.description,
                                   }}
                                 />
-                                <Link className={styles.More} href={`/product/${item.slug}`}>
+                                <Link
+                                  className={styles.More}
+                                  href={`/product/${item.slug}`}
+                                >
                                   Xem thêm
                                 </Link>
                               </div>

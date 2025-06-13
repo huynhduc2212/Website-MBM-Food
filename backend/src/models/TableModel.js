@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const tableSchema = new Schema(
   {
-    position: { type: String, required: true },
+    position: { type: String},
     status: {
       type: String,
       enum: ["Available", "Reserved"],

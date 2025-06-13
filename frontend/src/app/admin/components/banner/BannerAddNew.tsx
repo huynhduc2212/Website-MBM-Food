@@ -26,7 +26,7 @@ const formSchema = z.object({
     .nonempty("Tên banner không được bỏ trống")
     .min(6, "Tiêu đề phải có ít nhất 6 ký tự"),
   description: z.string().optional(),
-  image: z.string().min(1, "Ảnh không được để trống"),
+  image: z.string(),
 });
 
 function BannerAddNew() {
@@ -45,6 +45,11 @@ function BannerAddNew() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!file) {
+      toast.error("Ảnh không được để trống");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const bannerData = {

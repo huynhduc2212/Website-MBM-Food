@@ -153,7 +153,7 @@ const SuccessPage = () => {
 
         {/* Thông tin đơn hàng */}
         <div className="mt-6 border p-4 rounded-lg">
-          <h3 className="font-semibold mb-2">Mã đơn #{order.order_code}</h3>
+          <span className="font-semibold mb-2">Mã đơn :</span> {order.order_code}
           {order.details.map((item, index) => (
             <div
               key={index}
@@ -180,7 +180,7 @@ const SuccessPage = () => {
         {/* Nút tiếp tục mua hàng */}
         <div className="mt-6 text-center">
           <Link href="/">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-[#016a31] text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Tiếp tục mua hàng
             </button>
           </Link>

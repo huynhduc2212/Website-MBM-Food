@@ -28,13 +28,13 @@ export default function Footer(): JSX.Element {
           <p>
             Công ty TNHH MBM Food chuyên phục vụ trong lĩnh vực nhà hàng. Mã số
             thuế: 123456xxxx - Ngày cấp: 13/05/2024 - Nơi cấp: Sở kế hoạch và
-            đầu tư TPHCM - Website: mbmfood.net
+            đầu tư TPHCM - Website: mbmfood.store
           </p>
 
           <FooterInfoItem icon="/images/location.png" text="70 Lữ Gia, Phường 15, Quận 11, TP.HCM" />
           <FooterInfoItem icon="/images/clock.png" text="8h - 22h, Thứ 2 đến Chủ Nhật" />
           <FooterInfoItem icon="/images/phone.png" text="1900 6750" />
-          <FooterInfoItem icon="/images/email.png" text="support@mbm.vn" />
+          <FooterInfoItem icon="/images/email.png" text="mbmfoodstore@gmail.com" />
         </div>
 
         <div className={styles.footerSection}>

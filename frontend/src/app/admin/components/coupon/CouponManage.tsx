@@ -241,18 +241,6 @@ const CouponManage = () => {
                     <TableCell className="font-medium px-2">
                       {new Date(coupon.end_date).toLocaleDateString("vi-VN")}
                     </TableCell>
-                    {/* <TableCell className="font-medium px-2">
-                      <span
-                        className={`${commonClassNames.status} ${
-                          coupon.status === "Active"
-                            ? "text-green-500 border-green-500 bg-green-500"
-                            : "text-red-500 border-red-500 bg-red-500"
-                        } bg-opacity-10 cursor-pointer`}
-                        onClick={() => handleToggleStatus(coupon)}
-                      >
-                        {coupon.status}
-                      </span>
-                    </TableCell> */}
                     <TableCell className="font-medium px-2">
                       <span
                         className={`${commonClassNames.status} ${getStatusColor(
